@@ -28,9 +28,9 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnGiaHan" linkSize="1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btLamMoi" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btThanhLyHD" linkSize="1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btLamMoi2" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btInHD" linkSize="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
@@ -50,8 +50,8 @@
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="btThemHD" linkSize="2" alignment="2" min="-2" pref="39" max="-2" attributes="0"/>
                   <Component id="btnGiaHan" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="btLamMoi" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="btLamMoi2" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="btThanhLyHD" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="btInHD" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
@@ -123,6 +123,7 @@
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Th&#xf4;ng Tin Ph&#xf2;ng">
               <Font PropertyName="font" name="Tahoma" size="12" style="1"/>
+              <Color PropertyName="color" blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </TitledBorder>
           </Border>
         </Property>
@@ -173,8 +174,8 @@
                           <Component id="cboChonPhong" min="-2" pref="222" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="dtcNgaySinh" max="32767" attributes="0"/>
-                      <Component id="dtcNgaySinh1" max="32767" attributes="0"/>
+                      <Component id="dtcNgayBD" max="32767" attributes="0"/>
+                      <Component id="dtcNgayKT" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="51" pref="51" max="-2" attributes="0"/>
               </Group>
@@ -192,12 +193,12 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="dtcNgaySinh" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="dtcNgayBD" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel9" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="dtcNgaySinh1" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="dtcNgayKT" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel11" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -289,7 +290,7 @@
             <Property name="text" type="java.lang.String" value="Ng&#xe0;y B&#x1eaf;t &#x110;&#x1ea7;u"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="dtcNgaySinh">
+        <Component class="com.toedter.calendar.JDateChooser" name="dtcNgayBD">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
@@ -345,7 +346,7 @@
             <Property name="text" type="java.lang.String" value="Ng&#xe0;y K&#x1ebf;t Th&#xfa;c"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="dtcNgaySinh1">
+        <Component class="com.toedter.calendar.JDateChooser" name="dtcNgayKT">
         </Component>
       </SubComponents>
     </Container>
@@ -371,7 +372,7 @@
         <Property name="text" type="java.lang.String" value="Gia H&#x1ea1;n H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btLamMoi">
+    <Component class="javax.swing.JButton" name="btThanhLyHD">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="10" style="1"/>
@@ -382,7 +383,7 @@
         <Property name="text" type="java.lang.String" value="Thanh L&#xfd; H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btLamMoi2">
+    <Component class="javax.swing.JButton" name="btInHD">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="10" style="1"/>

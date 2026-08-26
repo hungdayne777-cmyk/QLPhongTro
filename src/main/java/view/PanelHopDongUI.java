@@ -37,17 +37,17 @@ public class PanelHopDongUI extends javax.swing.JPanel {
         txtGiaThue = new javax.swing.JTextField();
         cboChonPhong = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        dtcNgaySinh = new com.toedter.calendar.JDateChooser();
+        dtcNgayBD = new com.toedter.calendar.JDateChooser();
         jLabel6 = new javax.swing.JLabel();
         CboNguoiThue = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         cboTrangThaiPhongHD = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
-        dtcNgaySinh1 = new com.toedter.calendar.JDateChooser();
+        dtcNgayKT = new com.toedter.calendar.JDateChooser();
         btThemHD = new javax.swing.JButton();
         btnGiaHan = new javax.swing.JButton();
-        btLamMoi = new javax.swing.JButton();
-        btLamMoi2 = new javax.swing.JButton();
+        btThanhLyHD = new javax.swing.JButton();
+        btInHD = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Danh sách hợp đồng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), java.awt.Color.blue)); // NOI18N
 
@@ -81,7 +81,7 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông Tin Phòng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông Tin Phòng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), java.awt.Color.blue)); // NOI18N
         jPanel1.setForeground(java.awt.Color.blue);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -145,8 +145,8 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(cboChonPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(dtcNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dtcNgaySinh1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(dtcNgayBD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dtcNgayKT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(51, 51, 51))
         );
         jPanel1Layout.setVerticalGroup(
@@ -160,11 +160,11 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                             .addComponent(cboChonPhong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(dtcNgaySinh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dtcNgayBD, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(dtcNgaySinh1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dtcNgayKT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -199,13 +199,13 @@ public class PanelHopDongUI extends javax.swing.JPanel {
         btnGiaHan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/contract2.png"))); // NOI18N
         btnGiaHan.setText("Gia Hạn Hợp Đồng");
 
-        btLamMoi.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
-        btLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rejected (1).png"))); // NOI18N
-        btLamMoi.setText("Thanh Lý Hợp Đồng");
+        btThanhLyHD.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        btThanhLyHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rejected (1).png"))); // NOI18N
+        btThanhLyHD.setText("Thanh Lý Hợp Đồng");
 
-        btLamMoi2.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
-        btLamMoi2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer.png"))); // NOI18N
-        btLamMoi2.setText("In Hợp Đồng");
+        btInHD.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        btInHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer.png"))); // NOI18N
+        btInHD.setText("In Hợp Đồng");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -222,16 +222,16 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(btnGiaHan)
                         .addGap(18, 18, 18)
-                        .addComponent(btLamMoi)
+                        .addComponent(btThanhLyHD)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btLamMoi2))
+                        .addComponent(btInHD))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(0, 18, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btLamMoi, btLamMoi2, btThemHD, btnGiaHan});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btInHD, btThanhLyHD, btThemHD, btnGiaHan});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,28 +242,28 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btThemHD, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGiaHan)
-                    .addComponent(btLamMoi)
-                    .addComponent(btLamMoi2))
+                    .addComponent(btThanhLyHD)
+                    .addComponent(btInHD))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btLamMoi, btLamMoi2, btThemHD, btnGiaHan});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btInHD, btThanhLyHD, btThemHD, btnGiaHan});
 
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboNguoiThue;
-    private javax.swing.JButton btLamMoi;
-    private javax.swing.JButton btLamMoi2;
+    private javax.swing.JButton btInHD;
+    private javax.swing.JButton btThanhLyHD;
     private javax.swing.JButton btThemHD;
     private javax.swing.JButton btnGiaHan;
     private javax.swing.JComboBox<String> cboChonPhong;
     private javax.swing.JComboBox<String> cboTrangThaiPhongHD;
-    private com.toedter.calendar.JDateChooser dtcNgaySinh;
-    private com.toedter.calendar.JDateChooser dtcNgaySinh1;
+    private com.toedter.calendar.JDateChooser dtcNgayBD;
+    private com.toedter.calendar.JDateChooser dtcNgayKT;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

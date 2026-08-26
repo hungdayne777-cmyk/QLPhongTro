@@ -55,10 +55,15 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Phần Mềm Quản Lý Phòng Trọ");
         setBackground(new java.awt.Color(253, 253, 253));
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/logo.png")).getImage());
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("UTM Alberta Heavy", 1, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel1.setText("QUẢN LÝ PHÒNG TRỌ");
+        jLabel1.setText("              QUẢN LÝ PHÒNG TRỌ");
+        jLabel1.setToolTipText("");
+        jLabel1.setFocusCycleRoot(true);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         TabChucNang.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
@@ -66,10 +71,9 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(187, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(158, 158, 158))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 921, Short.MAX_VALUE))
             .addComponent(TabChucNang)
         );
         layout.setVerticalGroup(
@@ -78,7 +82,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TabChucNang, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE))
+                .addComponent(TabChucNang, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
