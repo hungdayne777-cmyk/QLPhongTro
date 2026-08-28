@@ -345,6 +345,9 @@
                   </Table>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblNguoiThueMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -360,6 +363,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="L&#xe0;m m&#x1edb;i"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btLamMoiActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btXoa">
       <Properties>
@@ -371,6 +377,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btXoaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btSua">
       <Properties>
@@ -382,6 +391,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btSuaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btThem">
       <Properties>
@@ -393,6 +405,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Th&#xea;m"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btThemActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

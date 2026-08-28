@@ -27,11 +27,12 @@ public class NguoiThueDAO {
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+              
                 String maNT = rs.getString("MaNT");
                 String hoTen = rs.getString("HoTen");
                 Date ngaySinh = rs.getDate("NgaySinh");
-                int cCCD = rs.getInt("CCCD");
-                int sDT = rs.getInt("SoDienThoai");
+                String cCCD = rs.getString("CCCD");         // Đổi thành String
+                String sDT = rs.getString("SoDienThoai");     // Đổi thành String
                 String eMail = rs.getString("Email");
                 Date ngayVaoO = rs.getDate("NgayVaoO");
                 String maPhong = rs.getString("MaPhong");
@@ -71,8 +72,8 @@ public class NguoiThueDAO {
                             rs.getString("MaNT"),
                             rs.getString("HoTen"),
                             rs.getDate("NgaySinh"),
-                            rs.getInt("CCCD"),
-                            rs.getInt("SoDienThoai"),
+                            rs.getString("CCCD"),
+                            rs.getString("SoDienThoai"),
                             rs.getString("Email"),
                             rs.getDate("NgayVaoO"),
                             rs.getString("MaPhong")
@@ -92,11 +93,11 @@ public class NguoiThueDAO {
 
             ps.setString(1, p.getMaNT());
             ps.setString(2, p.getHoTen());
-            ps.setDate(3, new java.sql.Date(p.getNgaySinh().getTime()));
-            ps.setInt(4, p.getCCCD());
-            ps.setInt(5, p.getSDT());
+            ps.setDate(3, p.getNgaySinh() != null ? new java.sql.Date(p.getNgaySinh().getTime()) : null);
+            ps.setString(4, p.getCCCD());
+            ps.setString(5, p.getSDT());
             ps.setString(6, p.getEmail());
-            ps.setDate(7, new java.sql.Date(p.getNgayVaoO().getTime()));
+            ps.setDate(7, p.getNgayVaoO() != null ? new java.sql.Date(p.getNgayVaoO().getTime()) : null);
             ps.setString(8, p.getMaPhong());
             int rows = ps.executeUpdate();
             return rows > 0;
@@ -112,15 +113,14 @@ public class NguoiThueDAO {
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-             
             ps.setString(1, p.getHoTen());
             ps.setDate(2, new java.sql.Date(p.getNgaySinh().getTime()));
-            ps.setInt(3, p.getCCCD());
-            ps.setInt(4, p.getSDT());
+            ps.setString(3, p.getCCCD());
+            ps.setString(4, p.getSDT());
             ps.setString(5, p.getEmail());
             ps.setDate(6, new java.sql.Date(p.getNgayVaoO().getTime()));
             ps.setString(7, p.getMaPhong());
-ps.setString(8, p.getMaNT());
+            ps.setString(8, p.getMaNT());
             int rows = ps.executeUpdate();
             return rows > 0;
 
@@ -139,11 +139,11 @@ ps.setString(8, p.getMaNT());
             ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                  String maNT = rs.getString("MaNT");
+                    String maNT = rs.getString("MaNT");
                 String hoTen = rs.getString("HoTen");
                 Date ngaySinh = rs.getDate("NgaySinh");
-                int cCCD = rs.getInt("CCCD");
-                int sDT = rs.getInt("SoDienThoai");
+                String cCCD = rs.getString("CCCD");         // Đổi thành String
+                String sDT = rs.getString("SoDienThoai");     // Đổi thành String
                 String eMail = rs.getString("Email");
                 Date ngayVaoO = rs.getDate("NgayVaoO");
                 String maPhong = rs.getString("MaPhong");

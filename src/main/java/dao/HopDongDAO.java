@@ -127,6 +127,36 @@ public class HopDongDAO {
         return false;
     }
 
+    public List<HopDong> findSapHetHan(int soNgay) {
+        List<HopDong> ds = new ArrayList<>();
+    // Sửa N'Đang hiệu lực' đúng theo dữ liệu trong SQL
+    // Dùng DATEDIFF để lọc các hợp đồng có Ngày Kết Thúc trong vòng N ngày tới hoặc đã quá hạn
+    String sql = "SELECT * FROM HOPDONG WHERE TrangThai = N'Đang hiệu lực' "
+               + "AND DATEDIFF(day, GETDATE(), NgayKetThuc) <= ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, soNgay);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ds.add(new HopDong(
+                    rs.getString("MaHD"),
+                    rs.getString("MaNT"),
+                    rs.getString("MaPhong"),
+                    rs.getDate("NgayBatDau"),   // Đã khớp tên cột NgayBatDau
+                    rs.getDate("NgayKetThuc"),  // Đã khớp tên cột NgayKetThuc
+                    rs.getDouble("GiaThue"),
+                    rs.getString("TrangThai")
+                ));
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi HopDongDAO.findSapHetHan: " + e.getMessage());
+    }
+    return ds;
+    }
+
     public List<HopDong> findByName(String name) {
         List<HopDong> ds = new ArrayList<>();
         String sql = "SELECT * FROM HOPDONG WHERE MaHD LIKE ?";
