@@ -190,4 +190,58 @@ public class HoaDonDAO {
         }
         return ds;
     }
+    public double[] getChiSoMoiNhatByMaHD(String maHD) {
+    double[] chiSo = null; 
+    String sql = "SELECT TOP 1 CsDienMoi, CsNuocMoi FROM HoaDon " +
+                 "WHERE MaHD = ? ORDER BY Nam DESC, Thang DESC, MaHoaDon DESC";
+    
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, maHD);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            chiSo = new double[]{
+                rs.getDouble("CsDienMoi"), 
+                rs.getDouble("CsNuocMoi")
+            };
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return chiSo;
+}
+
+
+public double[] getChiSoBanDauTuHopDong(String maHD) {
+    double[] chiSo = new double[]{0.0, 0.0};
+    String sql = "SELECT DienBanDau, NuocBanDau FROM HopDong WHERE MaHD = ?";
+    
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, maHD);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            chiSo[0] = rs.getDouble("DienBanDau");
+            chiSo[1] = rs.getDouble("NuocBanDau");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return chiSo;
+}
+public boolean capNhatTrangThaiThanhToan(String maHoaDon, String trangThaiMoi) {
+    String sql = "UPDATE HOADON SET TrangThaiThanhToan = ? WHERE MaHoaDon = ?";
+    
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        
+        ps.setString(1, trangThaiMoi);
+        ps.setString(2, maHoaDon);
+        
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 }

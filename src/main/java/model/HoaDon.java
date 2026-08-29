@@ -30,22 +30,32 @@ public class HoaDon {
     public HoaDon() {
     }
 
-    public HoaDon(String MaHoaDon, String MaHD, int Thang, int Nam, double CSDienCu, double CSDienMoi, double CSNuocCu, double CSNuocMoi, double GiaDien, double GiaNuoc, double TienPhong, double TongTien, Date NgayHH, String TrangThaiTT) {
-        this.MaHoaDon = MaHoaDon;
-        this.MaHD = MaHD;
-        this.Thang = Thang;
-        this.Nam = Nam;
-        this.CSDienCu = CSDienCu;
-        this.CSDienMoi = CSDienMoi;
-        this.CSNuocCu = CSNuocCu;
-        this.CSNuocMoi = CSNuocMoi;
-        this.GiaDien = GiaDien;
-        this.GiaNuoc = GiaNuoc;
-        this.TienPhong = TienPhong;
-        this.TongTien = TongTien;
-        this.NgayHH = NgayHH;
-        this.TrangThaiTT = TrangThaiTT;
-    }
+    public HoaDon(String MaHoaDon, String MaHD, int Thang, int Nam,
+        double CSDienCu, double CSDienMoi,
+        double GiaDien,
+        double CSNuocCu, double CSNuocMoi,
+        double GiaNuoc,
+        double TienPhong, double TongTien,
+        Date NgayHH, String TrangThaiTT) {
+
+    this.MaHoaDon = MaHoaDon;
+    this.MaHD = MaHD;
+    this.Thang = Thang;
+    this.Nam = Nam;
+
+    this.CSDienCu = CSDienCu;
+    this.CSDienMoi = CSDienMoi;
+    this.GiaDien = GiaDien;
+
+    this.CSNuocCu = CSNuocCu;
+    this.CSNuocMoi = CSNuocMoi;
+    this.GiaNuoc = GiaNuoc;
+
+    this.TienPhong = TienPhong;
+    this.TongTien = TongTien;
+    this.NgayHH = NgayHH;
+    this.TrangThaiTT = TrangThaiTT;
+}
 
     public String getMaHoaDon() {
         return MaHoaDon;
@@ -161,8 +171,9 @@ public class HoaDon {
 
     @Override
     public String toString() {
-        return "HoaDon{" + "MaHoaDon=" + MaHoaDon + ", MaHD=" + MaHD + ", Thang=" + Thang + ", Nam=" + Nam + ", CSDienCu=" + CSDienCu + ", CSDienMoi=" + CSDienMoi + ", CSNuocCu=" + CSNuocCu + ", CSNuocMoi=" + CSNuocMoi + ", GiaDien=" + GiaDien + ", GiaNuoc=" + GiaNuoc + ", TienPhong=" + TienPhong + ", TongTien=" + TongTien + ", NgayHH=" + NgayHH + ", TrangThaiTT=" + TrangThaiTT + '}';
+            return this.TrangThaiTT.trim();
     }
+    
 
     
 }

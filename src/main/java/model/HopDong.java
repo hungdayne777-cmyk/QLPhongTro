@@ -91,7 +91,8 @@ public class HopDong {
 
     @Override
     public String toString() {
-        return "HopDong{" + "MaHD=" + MaHD + ", MaNT=" + MaNT + ", MaPhong=" + MaPhong + ", NgayBD=" + NgayBD + ", NgayKT=" + NgayKT + ", GiaThue=" + GiaThue + ", TrangThai=" + TrangThai + '}';
+           return this.MaHD.trim();
     }
+    
     
 }
