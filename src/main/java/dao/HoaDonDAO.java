@@ -244,4 +244,28 @@ public boolean capNhatTrangThaiThanhToan(String maHoaDon, String trangThaiMoi) {
     }
     return false;
 }
+
+public Object[] getTenNguoiThueByMaHoaDon(String maHoaDon) {
+    String sql = "SELECT nt.HoTen, hd.TongTien " +
+                 "FROM HOADON hd " +
+                 "JOIN HOPDONG h ON hd.MaHD = h.MaHD " +
+                 "JOIN NGUOITHUE nt ON h.MaNT = nt.MaNT " +
+                 "WHERE hd.MaHoaDon = ?";
+
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, maHoaDon);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String tenNguoiThue = rs.getString("HoTen");
+                double tongTien = rs.getDouble("TongTien");
+                return new Object[]{tenNguoiThue, tongTien};
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi lấy thông tin thanh toán: " + e.getMessage());
+    }
+    return null;
+}
 }

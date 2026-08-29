@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import model.HoaDon;
 import model.HopDong;
 import util.ExcelExporter;
+
 /**
  *
  * @author MSI
@@ -625,41 +626,56 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }
     private void btnXacnhanTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacnhanTTActionPerformed
 
-        String maHDN = txtMaHoaDon.getText().trim();
+     String maHDN = txtMaHoaDon.getText().trim();
 
-        if (maHDN.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần xác nhận thanh toán!",
-                    "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
+    if (maHDN.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần xác nhận thanh toán!",
+                "Thông báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    String trangThaiHienTai = cboTrangThaiTT.getSelectedItem().toString();
+    if ("Đã thanh toán".equalsIgnoreCase(trangThaiHienTai)) {
+        JOptionPane.showMessageDialog(this, "Hóa đơn " + maHDN + " ĐÃ ĐƯỢC THANH TOÁN trước đó rồi!",
+                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+  
+    HoaDonDAO hdDAO = new HoaDonDAO();
+    Object[] thongTin = hdDAO.getTenNguoiThueByMaHoaDon(maHDN);
+
+    String message;
+    if (thongTin != null) {
+        String tenNguoiThue = (String) thongTin[0];
+        double tongTien = (double) thongTin[1];
+
+        
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0 VNĐ");
+        String tongTienStr = df.format(tongTien);
+
+        message = "Xác nhận thanh toán hóa đơn " + maHDN + "?\n" +
+                  "• Khách thuê: " + tenNguoiThue + "\n" +
+                  "• Tổng tiền: " + tongTienStr;
+    } else {
+        message = "Xác nhận hóa đơn " + maHDN + " sẽ được thanh toán?";
+    }
+
+    int confirm = JOptionPane.showConfirmDialog(this, message,
+            "Xác nhận thanh toán", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        boolean thanhCong = hdDAO.capNhatTrangThaiThanhToan(maHDN, "Đã thanh toán");
+
+        if (thanhCong) {
+            JOptionPane.showMessageDialog(this, "Thanh Toán thành công!");
+            cboTrangThaiTT.setSelectedItem("Đã thanh toán");
+            Khoi_Tao_Table();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thanh toán thất bại. Vui lòng kiểm tra lại!",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-
-        String trangThaiHienTai = cboTrangThaiTT.getSelectedItem().toString();
-        if ("Đã thanh toán".equalsIgnoreCase(trangThaiHienTai)) {
-            JOptionPane.showMessageDialog(this, "Hóa đơn " + maHDN + " ĐÃ ĐƯỢC THANH TOÁN trước đó rồi!",
-                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Xác nhận hóa đơn " + maHDN + " sẽ được thanh toán?",
-                "Xác nhận thanh toán", JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            HoaDonDAO hdDAO = new HoaDonDAO();
-
-            boolean thanhCong = hdDAO.capNhatTrangThaiThanhToan(maHDN, "Đã thanh toán");
-
-            if (thanhCong) {
-                JOptionPane.showMessageDialog(this, "Thanh Toán thành công!");
-
-                cboTrangThaiTT.setSelectedItem("Đã thanh toán");
-
-                Khoi_Tao_Table();
-            } else {
-                JOptionPane.showMessageDialog(this, "Thanh toán thất bại. Vui lòng kiểm tra lại!",
-                        "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-
+    }
     }//GEN-LAST:event_btnXacnhanTTActionPerformed
 
     private void btThemHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemHDActionPerformed
@@ -770,7 +786,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ đơn giá Điện và Nước !");
             return;
         }
-         double csDienCu = getDouble(txtdiencu.getText());
+        double csDienCu = getDouble(txtdiencu.getText());
         double csDienMoi = getDouble(txtdienmoi.getText());
         double csNuocCu = getDouble(txtnuoccu.getText());
         double csNuocMoi = getDouble(txtnuocmoi.getText());
@@ -860,10 +876,9 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }//GEN-LAST:event_cboTrangThaiTTActionPerformed
 
     private void btInHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInHDActionPerformed
-     
+
         String maHoaDon = txtMaHoaDon.getText().trim();
 
-      
         if (maHoaDon.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Vui lòng chọn 1 dòng hóa đơn từ bảng để in!",
@@ -872,12 +887,11 @@ public class PanelHDvaDN extends javax.swing.JPanel {
             return;
         }
 
-       
         util.InHoaDon.inHoaDon(maHoaDon);
     }//GEN-LAST:event_btInHDActionPerformed
 
     private void btXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXuatExcelActionPerformed
-     ExcelExporter.exportJTableToExcel(tblHoaDon, "DanhSachHoaDon");
+        ExcelExporter.exportJTableToExcel(tblHoaDon, "DanhSachHoaDon");
     }//GEN-LAST:event_btXuatExcelActionPerformed
 
 
