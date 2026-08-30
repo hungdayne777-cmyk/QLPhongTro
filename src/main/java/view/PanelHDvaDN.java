@@ -144,9 +144,8 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         CboHopDong.addActionListener(this::CboHopDongActionPerformed);
 
         SpnThang.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        SpnThang.setModel(new javax.swing.SpinnerNumberModel());
+        SpnThang.setModel(new javax.swing.SpinnerNumberModel(1, 1, 12, 1));
         SpnThang.setEditor(new javax.swing.JSpinner.NumberEditor(SpnThang, ""));
-        SpnThang.setEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel7.setText("Tháng");
@@ -155,8 +154,8 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jLabel8.setText("Năm");
 
         SpnNam.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        SpnNam.setModel(new javax.swing.SpinnerNumberModel(2000, 2000, 2100, 1));
         SpnNam.setEditor(new javax.swing.JSpinner.NumberEditor(SpnNam, ""));
-        SpnNam.setEnabled(false);
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setText("Ngày Hết Hạn");
@@ -613,69 +612,60 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }//GEN-LAST:event_CboHopDongActionPerformed
 
     private void dtcNgayHHPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtcNgayHHPropertyChange
-        if ("date".equals(evt.getPropertyName())) {
-            Date selectedDate = dtcNgayHH.getDate();
-            if (selectedDate != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(selectedDate);
 
-                SpnThang.setValue(cal.get(Calendar.MONTH) + 1);
-                SpnNam.setValue(cal.get(Calendar.YEAR));
-            }
+
     }//GEN-LAST:event_dtcNgayHHPropertyChange
-    }
+
     private void btnXacnhanTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacnhanTTActionPerformed
 
-     String maHDN = txtMaHoaDon.getText().trim();
+        String maHDN = txtMaHoaDon.getText().trim();
 
-    if (maHDN.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần xác nhận thanh toán!",
-                "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    String trangThaiHienTai = cboTrangThaiTT.getSelectedItem().toString();
-    if ("Đã thanh toán".equalsIgnoreCase(trangThaiHienTai)) {
-        JOptionPane.showMessageDialog(this, "Hóa đơn " + maHDN + " ĐÃ ĐƯỢC THANH TOÁN trước đó rồi!",
-                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-
-  
-    HoaDonDAO hdDAO = new HoaDonDAO();
-    Object[] thongTin = hdDAO.getTenNguoiThueByMaHoaDon(maHDN);
-
-    String message;
-    if (thongTin != null) {
-        String tenNguoiThue = (String) thongTin[0];
-        double tongTien = (double) thongTin[1];
-
-        
-        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0 VNĐ");
-        String tongTienStr = df.format(tongTien);
-
-        message = "Xác nhận thanh toán hóa đơn " + maHDN + "?\n" +
-                  "• Khách thuê: " + tenNguoiThue + "\n" +
-                  "• Tổng tiền: " + tongTienStr;
-    } else {
-        message = "Xác nhận hóa đơn " + maHDN + " sẽ được thanh toán?";
-    }
-
-    int confirm = JOptionPane.showConfirmDialog(this, message,
-            "Xác nhận thanh toán", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-    if (confirm == JOptionPane.YES_OPTION) {
-        boolean thanhCong = hdDAO.capNhatTrangThaiThanhToan(maHDN, "Đã thanh toán");
-
-        if (thanhCong) {
-            JOptionPane.showMessageDialog(this, "Thanh Toán thành công!");
-            cboTrangThaiTT.setSelectedItem("Đã thanh toán");
-            Khoi_Tao_Table();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thanh toán thất bại. Vui lòng kiểm tra lại!",
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (maHDN.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần xác nhận thanh toán!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
+
+        String trangThaiHienTai = cboTrangThaiTT.getSelectedItem().toString();
+        if ("Đã thanh toán".equalsIgnoreCase(trangThaiHienTai)) {
+            JOptionPane.showMessageDialog(this, "Hóa đơn " + maHDN + " ĐÃ ĐƯỢC THANH TOÁN trước đó rồi!",
+                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        HoaDonDAO hdDAO = new HoaDonDAO();
+        Object[] thongTin = hdDAO.getTenNguoiThueByMaHoaDon(maHDN);
+
+        String message;
+        if (thongTin != null) {
+            String tenNguoiThue = (String) thongTin[0];
+            double tongTien = (double) thongTin[1];
+
+            java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0 VNĐ");
+            String tongTienStr = df.format(tongTien);
+
+            message = "Xác nhận thanh toán hóa đơn " + maHDN + "?\n"
+                    + "• Khách thuê: " + tenNguoiThue + "\n"
+                    + "• Tổng tiền: " + tongTienStr;
+        } else {
+            message = "Xác nhận hóa đơn " + maHDN + " sẽ được thanh toán?";
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, message,
+                "Xác nhận thanh toán", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean thanhCong = hdDAO.capNhatTrangThaiThanhToan(maHDN, "Đã thanh toán");
+
+            if (thanhCong) {
+                JOptionPane.showMessageDialog(this, "Thanh Toán thành công!");
+                cboTrangThaiTT.setSelectedItem("Đã thanh toán");
+                Khoi_Tao_Table();
+            } else {
+                JOptionPane.showMessageDialog(this, "Thanh toán thất bại. Vui lòng kiểm tra lại!",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnXacnhanTTActionPerformed
 
     private void btThemHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemHDActionPerformed
@@ -977,11 +967,12 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     private void Khoi_Tao_ComboBoxHD() {
         DefaultComboBoxModel model = (DefaultComboBoxModel) CboHopDong.getModel();
         model.removeAllElements();
-
+   
         List<HopDong> listHD = hopDongDAO.findAll();
         for (HopDong h : listHD) {
             model.addElement(h);
         }
+         CboHopDong.setSelectedIndex(-1);
     }
 
     private void Chon_TT(String TrangThaiTT) {
