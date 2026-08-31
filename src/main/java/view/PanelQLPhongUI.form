@@ -108,6 +108,9 @@
                   </Table>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblPhongThueMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -250,6 +253,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtMaPhong">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtTenPhong">
         </Component>
@@ -269,11 +275,9 @@
         <Component class="javax.swing.JComboBox" name="cboLoaiGia">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
+              <StringArray count="2">
+                <StringItem index="0" value="C&#x1ed1; &#x111;&#x1ecb;nh"/>
+                <StringItem index="1" value="Theo &#x111;&#x1ea7;u ng&#x1b0;&#x1edd;i"/>
               </StringArray>
             </Property>
           </Properties>
@@ -284,11 +288,9 @@
         <Component class="javax.swing.JComboBox" name="CboTrangThai">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
+              <StringArray count="2">
+                <StringItem index="0" value="Tr&#x1ed1;ng"/>
+                <StringItem index="1" value="&#x110;&#xe3; thu&#xea;"/>
               </StringArray>
             </Property>
           </Properties>

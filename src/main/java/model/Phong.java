@@ -9,7 +9,7 @@ package model;
  * @author PC_33
  */
 public class Phong {
-    private String MaPhong;
+     private String MaPhong;
     private String TenPhong;
     private int SoNguoiToiDa;
     private double GiaPhong;
@@ -80,5 +80,4 @@ public class Phong {
     public String toString() {
         return "Phong{" + "MaPhong=" + MaPhong + ", TenPhong=" + TenPhong + ", SoNguoiToiDa=" + SoNguoiToiDa + ", GiaPhong=" + GiaPhong + ", Lo\u1ea1iGia=" + LoaiGia + ", TrangThai=" + TrangThai + '}';
     }
-    
 }

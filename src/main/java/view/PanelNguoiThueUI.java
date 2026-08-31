@@ -4,19 +4,68 @@
  */
 package view;
 
+import dao.NguoiThueDAO;
+import dao.PhongDAO;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.NguoiThue;
+import model.Phong;
+
 /**
  *
  * @author MSI
  */
 public class PanelNguoiThueUI extends javax.swing.JPanel {
 
+      NguoiThueDAO ntDAO = new NguoiThueDAO();
+    PhongDAO pDAO = new PhongDAO();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     /**
      * Creates new form PanelNguoiThueUI
      */
     public PanelNguoiThueUI() {
         initComponents();
+        NapDuLieuCboMaPhong();
+    NapDuLieuTableNguoiThue();
     }
 
+    public void NapDuLieuTableNguoiThue() {
+        DefaultTableModel model = (DefaultTableModel) tblNguoiThue.getModel();
+
+        String[] headers = {"Mã NT", "Họ Tên", "Ngày Sinh", "CCCD", "SĐT", "Email", "Ngày Vào Ở", "Mã Phòng"};
+        if (model.getColumnCount() == 0 || model.getColumnName(0).equals("Title 1")) {
+            model.setColumnIdentifiers(headers);
+        }
+
+        model.setRowCount(0); // Xóa dữ liệu cũ
+
+        List<NguoiThue> list = ntDAO.findAll();
+        for (NguoiThue nt : list) {
+            String ngaySinhStr = nt.getNgaySinh() != null ? sdf.format(nt.getNgaySinh()) : "";
+            String ngayVaoOStr = nt.getNgayVaoO() != null ? sdf.format(nt.getNgayVaoO()) : "";
+
+            model.addRow(new Object[]{
+                nt.getMaNT(),
+                nt.getHoTen(),
+                ngaySinhStr,
+                nt.getCCCD(),
+                nt.getSDT(),
+                nt.getEmail(),
+                ngayVaoOStr,
+                nt.getMaPhong()
+            });
+        }
+    }
+
+    public void NapDuLieuCboMaPhong() {
+        CboMaPhong.removeAllItems();
+        List<Phong> dsPhong = pDAO.findAll();
+        for (Phong p : dsPhong) {
+            CboMaPhong.addItem(p.getMaPhong());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -184,6 +233,11 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblNguoiThue.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNguoiThueMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblNguoiThue);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -205,18 +259,22 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         btLamMoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/reload.png"))); // NOI18N
         btLamMoi.setText("Làm mới");
+        btLamMoi.addActionListener(this::btLamMoiActionPerformed);
 
         btXoa.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
         btXoa.setText("Xóa");
+        btXoa.addActionListener(this::btXoaActionPerformed);
 
         btSua.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/reload.png"))); // NOI18N
         btSua.setText("Sửa");
+        btSua.addActionListener(this::btSuaActionPerformed);
 
         btThem.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/plus.png"))); // NOI18N
         btThem.setText("Thêm");
+        btThem.addActionListener(this::btThemActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -268,13 +326,164 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
 
     private void btTimNguoiThueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimNguoiThueActionPerformed
         // TODO add your handling code here:
-        // int traloi = JOptionPane.showConfirmDialog(this, "Có muốn thoát chương trình không?");
-        //  if(traloi == JOptionPane.YES_OPTION)
-        {
-            //  System.exit(0); //ket thuc chuong trinh
-            //  dispose();// đóng cửa sổ
+        String keyword = txtKeyword.getText().trim();
+        DefaultTableModel model = (DefaultTableModel) tblNguoiThue.getModel();
+        model.setRowCount(0);
+
+        List<NguoiThue> list = ntDAO.findByName(keyword);
+        for (NguoiThue nt : list) {
+            String ngaySinhStr = nt.getNgaySinh() != null ? sdf.format(nt.getNgaySinh()) : "";
+            String ngayVaoOStr = nt.getNgayVaoO() != null ? sdf.format(nt.getNgayVaoO()) : "";
+
+            model.addRow(new Object[]{
+                nt.getMaNT(),
+                nt.getHoTen(),
+                ngaySinhStr,
+                nt.getCCCD(),
+                nt.getSDT(),
+                nt.getEmail(),
+                ngayVaoOStr,
+                nt.getMaPhong()
+            });
         }
     }//GEN-LAST:event_btTimNguoiThueActionPerformed
+
+    private void tblNguoiThueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNguoiThueMouseClicked
+        // TODO add your handling code here:
+        int row = tblNguoiThue.getSelectedRow();
+        if (row >= 0) {
+            txtNguoiThue.setText(tblNguoiThue.getValueAt(row, 0).toString());
+            txtHoTen.setText(tblNguoiThue.getValueAt(row, 1).toString());
+
+            // Xử lý hiện Ngày Sinh lên JDateChooser
+            try {
+                String ngaySinhStr = tblNguoiThue.getValueAt(row, 2).toString();
+                if (!ngaySinhStr.isEmpty()) {
+                    java.util.Date date = sdf.parse(ngaySinhStr);
+                    dtcNgaySinh.setDate(date);
+                } else {
+                    dtcNgaySinh.setDate(null);
+                }
+            } catch (Exception e) {
+                dtcNgaySinh.setDate(null);
+            }
+
+            txtSoCC.setText(tblNguoiThue.getValueAt(row, 3).toString());
+            txtSoDT.setText(tblNguoiThue.getValueAt(row, 4).toString());
+            txtEmail.setText(tblNguoiThue.getValueAt(row, 5).toString());
+
+            // Nếu muốn hiện cả Mã Phòng lên ComboBox thì bật dòng này lên:
+             CboMaPhong.setSelectedItem(tblNguoiThue.getValueAt(row, 7).toString());
+        }
+    }//GEN-LAST:event_tblNguoiThueMouseClicked
+
+    private void btThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemActionPerformed
+        // TODO add your handling code here:
+        String ma = txtNguoiThue.getText().trim();
+        String ten = txtHoTen.getText().trim();
+        String email = txtEmail.getText().trim();
+        String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString() : "";
+
+        if (ma.isEmpty() || ten.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã và Họ tên người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        java.util.Date selectedDate = dtcNgaySinh.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+
+        // Lấy CCCD và SĐT dạng String chuẩn xác
+        String cccd = txtSoCC.getText().trim();
+        String sdt = txtSoDT.getText().trim();
+
+        java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
+
+        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
+        if (ntDAO.insert(nt)) {
+            JOptionPane.showMessageDialog(this, "Thêm người thuê thành công!");
+            NapDuLieuTableNguoiThue();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btThemActionPerformed
+
+    private void btSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaActionPerformed
+        // TODO add your handling code here:
+        String ma = txtNguoiThue.getText().trim();
+        String ten = txtHoTen.getText().trim();
+        String email = txtEmail.getText().trim();
+        String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString() : "";
+
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần sửa từ bảng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        java.util.Date selectedDate = dtcNgaySinh.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+
+        // Lấy CCCD và SĐT dạng String chuẩn xác
+        String cccd = txtSoCC.getText().trim();
+        String sdt = txtSoDT.getText().trim();
+
+        java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
+
+        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
+        if (ntDAO.update(nt)) {
+            JOptionPane.showMessageDialog(this, "Cập nhật thông tin thành công!");
+            NapDuLieuTableNguoiThue();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btSuaActionPerformed
+
+    private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
+        // TODO add your handling code here:
+        String ma = txtNguoiThue.getText().trim();
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ma + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (ntDAO.delete(ma)) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                NapDuLieuTableNguoiThue();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btXoaActionPerformed
+
+    private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
+        // TODO add your handling code here:
+         NapDuLieuTableNguoiThue();
+        NapDuLieuCboMaPhong();
+
+        // Clear toàn bộ các ô nhập liệu
+        txtNguoiThue.setText("");
+        txtHoTen.setText("");
+        dtcNgaySinh.setDate(null);
+        txtSoCC.setText(""); // Bổ sung dòng này để xóa Số Căn Cước
+        txtSoDT.setText("");
+        txtEmail.setText("");
+        txtKeyword.setText("");
+
+        // Bỏ chọn dòng trên bảng (nếu đang chọn)
+        tblNguoiThue.clearSelection();
+
+        // Đưa con trỏ chuột về lại ô Mã Người Thuê để nhập mới luôn cho lẹ
+        txtNguoiThue.requestFocus();
+    }//GEN-LAST:event_btLamMoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -20,7 +20,7 @@ import util.DBConnection;
  */
 public class HoaDonDAO {
 
-    public List<HoaDon> findAll() {
+     public List<HoaDon> findAll() {
         List<HoaDon> ds = new ArrayList<>();
         String sql = "SELECT * FROM HOADON";
 
@@ -158,6 +158,38 @@ public class HoaDonDAO {
         }
         return false;
     }
+    
+    public List<HoaDon> findNoQuaHan() {
+    List<HoaDon> ds = new ArrayList<>();
+    // Sửa TrangThaiTT -> TrangThai (hoặc tên cột thực tế trong bảng HOADON)
+    String sql = "SELECT * FROM HOADON WHERE TrangThaiThanhToan <> N'Đã thanh toán' AND NgayHetHan < GETDATE()";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            ds.add(new HoaDon(
+                rs.getString("MaHoaDon"),
+                            rs.getString("MaHD"),
+                            rs.getInt("Thang"),
+                            rs.getInt("Nam"),
+                            rs.getDouble("CSDienCu"),
+                            rs.getDouble("CSDienMoi"),
+                            rs.getDouble("DonGiaDien"),
+                            rs.getDouble("CSNuocCu"),
+                            rs.getDouble("CSNuocMoi"),
+                            rs.getDouble("DonGiaNuoc"),
+                            rs.getDouble("TienPhong"),
+                            rs.getDouble("TongTien"),
+                            rs.getDate("NgayHetHan"),
+                            rs.getString("TrangThaiThanhToan")
+            ));
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi HoaDonDAO.findNoQuaHan: " + e.getMessage());
+    }
+    return ds;
+}
 
     public List<HoaDon> findByName(String name) {
         List<HoaDon> ds = new ArrayList<>();

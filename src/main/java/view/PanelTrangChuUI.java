@@ -4,18 +4,77 @@
  */
 package view;
 
+import dao.HoaDonDAO;
+import dao.HopDongDAO;
+import dao.NguoiThueDAO;
+import dao.PhongDAO;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.HoaDon;
+import model.HopDong;
+
 /**
  *
  * @author MSI
  */
 public class PanelTrangChuUI extends javax.swing.JPanel {
 
+     private PhongDAO pDAO = new PhongDAO();
+    private HopDongDAO hdDAO = new HopDongDAO();
+    private HoaDonDAO hoadonDAO = new HoaDonDAO();
+    private NguoiThueDAO ntDAO = new NguoiThueDAO();
+    java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
     /**
      * Creates new form PanelTrangChuUI
      */
     public PanelTrangChuUI() {
         initComponents();
+        NapDuLieuThongKe();
     }
+    
+    public void NapDuLieuTableNoQuaHan() {
+        DefaultTableModel model = (DefaultTableModel) tblNoquahan.getModel();
+    model.setColumnIdentifiers(new String[]{"Mã Hóa Đơn", "Mã Hợp Đồng", "Tổng Tiền (VNĐ)", "Ngày Hết Hạn", "Trạng Thái"});
+    model.setRowCount(0);
+    
+    for (HoaDon hd : hoadonDAO.findNoQuaHan()) {
+        model.addRow(new Object[]{
+            hd.getMaHoaDon(), hd.getMaHD(), 
+            df.format(hd.getTongTien()) + " VNĐ", // Định dạng tiền
+            hd.getNgayHH(), hd.getTrangThaiTT()
+        });
+    }
+    }
+    
+    public void NapDuLieuTableHopDong() {
+        DefaultTableModel model = (DefaultTableModel) tblHDsaphethan.getModel();
+    model.setColumnIdentifiers(new String[]{"Mã Hợp Đồng", "Mã Người Thuê", "Mã Phòng", "Ngày Kết Thúc", "Giá Thuê", "Trạng Thái"});
+    model.setRowCount(0);
+    
+    for (HopDong hd : hdDAO.findSapHetHan(30)) {
+        model.addRow(new Object[]{
+            hd.getMaHD(), hd.getMaNT(), hd.getMaPhong(), 
+            hd.getNgayKT(), 
+            df.format(hd.getGiaThue())+ " VNĐ", // Định dạng tiền
+            hd.getTrangThai()
+        });
+    }
+    }
+    
+    public void NapDuLieuThongKe() {
+    // 1. Nạp bảng Nợ quá hạn
+    NapDuLieuTableNoQuaHan();
+    
+    // 2. Nạp bảng Hợp đồng sắp hết hạn
+    NapDuLieuTableHopDong();
+    
+    // 3. Cập nhật 4 ô thống kê
+    txtTongphongtrong.setText(String.valueOf(pDAO.countTrangThai("Trống")));
+    txtPhongdathue.setText(String.valueOf(pDAO.countTrangThai("Đã thuê")));
+    txtHDsaphethan.setText(String.valueOf(hdDAO.findSapHetHan(30).size()));
+    txtHDnoquahan.setText(String.valueOf(hoadonDAO.findNoQuaHan().size()));
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -171,10 +230,12 @@ public class PanelTrangChuUI extends javax.swing.JPanel {
         btnLammoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnLammoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/reload.png"))); // NOI18N
         btnLammoi.setText("Làm Mới");
+        btnLammoi.addActionListener(this::btnLammoiActionPerformed);
 
         btnGuinhacnho.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnGuinhacnho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/email.png"))); // NOI18N
         btnGuinhacnho.setText("Gửi Nhắc Nhở");
+        btnGuinhacnho.addActionListener(this::btnGuinhacnhoActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -209,6 +270,38 @@ public class PanelTrangChuUI extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLammoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLammoiActionPerformed
+        // TODO add your handling code here:
+        NapDuLieuThongKe();
+    JOptionPane.showMessageDialog(this, "Đã cập nhật dữ liệu mới nhất!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnLammoiActionPerformed
+
+    private void btnGuinhacnhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuinhacnhoActionPerformed
+        // TODO add your handling code here:
+        List<HoaDon> dsNo = hoadonDAO.findNoQuaHan();
+    
+    if (dsNo == null || dsNo.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Hiện tại không có hóa đơn nào quá hạn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+    int confirm = JOptionPane.showConfirmDialog(
+        this, 
+        "Bạn có muốn gửi thông báo nhắc nợ tới " + dsNo.size() + " hóa đơn quá hạn?", 
+        "Xác nhận", 
+        JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        StringBuilder thongBao = new StringBuilder("Đã gửi nhắc nhở thành công cho:\n");
+        for (HoaDon hd : dsNo) {
+            thongBao.append("• Mã HĐ: ").append(hd.getMaHoaDon())
+                    .append(" | Hợp đồng: ").append(hd.getMaHD()).append("\n");
+        }
+        JOptionPane.showMessageDialog(this, thongBao.toString(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+    }//GEN-LAST:event_btnGuinhacnhoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

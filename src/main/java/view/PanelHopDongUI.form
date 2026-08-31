@@ -23,21 +23,24 @@
                       <Component id="jPanel2" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
-                      <Component id="btThemHD" linkSize="1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btnGiaHan" linkSize="1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btThanhLyHD" linkSize="1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btInHD" linkSize="1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel1" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="0" pref="18" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+              <Component id="btThemHD" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnGiaHan" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btThanhLyHD" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btInHD" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnLamMoi" min="-2" pref="155" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -46,12 +49,13 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="btThemHD" linkSize="2" alignment="2" min="-2" pref="39" max="-2" attributes="0"/>
                   <Component id="btnGiaHan" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="btThanhLyHD" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="btInHD" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnLamMoi" alignment="2" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
@@ -112,6 +116,9 @@
                   </Table>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblHopDongMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -360,6 +367,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="T&#x1ea1;o H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btThemHDActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnGiaHan">
       <Properties>
@@ -371,6 +381,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Gia H&#x1ea1;n H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGiaHanActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btThanhLyHD">
       <Properties>
@@ -382,6 +395,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Thanh L&#xfd; H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btThanhLyHDActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btInHD">
       <Properties>
@@ -393,6 +409,23 @@
         </Property>
         <Property name="text" type="java.lang.String" value="In H&#x1ee3;p &#x110;&#x1ed3;ng"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btInHDActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnLamMoi">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="10" style="1"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/icons/reload.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="L&#xe0;m M&#x1edb;i"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLamMoiActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -14,8 +14,8 @@ public class NguoiThue {
     private String MaNT;
     private String HoTen;
     private Date NgaySinh;
-    private int CCCD;
-    private int SDT;
+    private String CCCD;
+    private String SDT;
     private String Email;
     private Date NgayVaoO;
     private String MaPhong;
@@ -23,7 +23,7 @@ public class NguoiThue {
     public NguoiThue() {
     }
 
-    public NguoiThue(String MaNT, String HoTen, Date NgaySinh, int CCCD, int SDT, String Email, Date NgayVaoO, String MaPhong) {
+    public NguoiThue(String MaNT, String HoTen, Date NgaySinh, String CCCD, String SDT, String Email, Date NgayVaoO, String MaPhong) {
         this.MaNT = MaNT;
         this.HoTen = HoTen;
         this.NgaySinh = NgaySinh;
@@ -58,19 +58,19 @@ public class NguoiThue {
         this.NgaySinh = NgaySinh;
     }
 
-    public int getCCCD() {
+    public String getCCCD() {
         return CCCD;
     }
 
-    public void setCCCD(int CCCD) {
+    public void setCCCD(String CCCD) {
         this.CCCD = CCCD;
     }
 
-    public int getSDT() {
+    public String getSDT() {
         return SDT;
     }
 
-    public void setSDT(int SDT) {
+    public void setSDT(String SDT) {
         this.SDT = SDT;
     }
 
@@ -102,5 +102,5 @@ public class NguoiThue {
     public String toString() {
         return "NguoiThue{" + "MaNT=" + MaNT + ", HoTen=" + HoTen + ", NgaySinh=" + NgaySinh + ", CCCD=" + CCCD + ", SDT=" + SDT + ", Email=" + Email + ", NgayVaoO=" + NgayVaoO + ", MaPhong=" + MaPhong + '}';
     }
-    
+
 }

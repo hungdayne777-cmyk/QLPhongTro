@@ -39,6 +39,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         Khoi_Tao_ComboBoxHD();
         Khoi_Tao_ComboBoxTT();
         Gan_Du_lieu();
+        tblHoaDon.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     /**
@@ -117,8 +118,9 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 892, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -965,14 +967,12 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }
 
     private void Khoi_Tao_ComboBoxHD() {
-        DefaultComboBoxModel model = (DefaultComboBoxModel) CboHopDong.getModel();
-        model.removeAllElements();
-   
-        List<HopDong> listHD = hopDongDAO.findAll();
-        for (HopDong h : listHD) {
-            model.addElement(h);
-        }
-         CboHopDong.setSelectedIndex(-1);
+       CboHopDong.removeAllItems();
+    HopDongDAO dao = new HopDongDAO();
+    List<HopDong> list = dao.findAll(); // Lấy danh sách từ HopDongDAO
+    for (HopDong hd : list) {
+        CboHopDong.addItem(hd.getMaHD()); // Lấy chính xác mã hợp đồng từ Model HopDong
+    }
     }
 
     private void Chon_TT(String TrangThaiTT) {
