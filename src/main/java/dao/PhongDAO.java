@@ -136,6 +136,45 @@ public class PhongDAO {
         }
         return 0;
     }
+    public boolean thanhLyHopDong(String maHopDong, String maPhong) {
+    String sqlUpdateHopDong = "UPDATE HOPDONG SET TrangThai = N'Đã thanh lý' WHERE MaHopDong = ?";
+    String sqlDeleteNguoiThue = "DELETE FROM NGUOITHUE WHERE MaPhong = ?";
+    String sqlUpdatePhong = "UPDATE PHONG SET TrangThai = N'Trống' WHERE MaPhong = ?";
+
+    Connection conn = null;
+    try {
+        conn = DBConnection.getConnection();
+        conn.setAutoCommit(false); // Bắt đầu Transaction
+
+        // 1. Cập nhật trạng thái hợp đồng
+        try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdateHopDong)) {
+            ps1.setNString(1, maHopDong);
+            ps1.executeUpdate();
+        }
+
+        // 2. Xóa danh sách người thuê khỏi phòng
+        try (PreparedStatement ps2 = conn.prepareStatement(sqlDeleteNguoiThue)) {
+            ps2.setNString(1, maPhong);
+            ps2.executeUpdate();
+        }
+
+        // 3. Chuyển trạng thái phòng về 'Trống'
+        try (PreparedStatement ps3 = conn.prepareStatement(sqlUpdatePhong)) {
+            ps3.setNString(1, maPhong);
+            ps3.executeUpdate();
+        }
+
+        conn.commit(); // Xác nhận lưu thay đổi
+        return true;
+
+    } catch (SQLException e) {
+        if (conn != null) {
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); } // Tự động hoàn tác nếu lỗi
+        }
+        e.printStackTrace();
+    }
+    return false;
+}
 
     public List<Phong> findByName(String name) {
         List<Phong> ds = new ArrayList<>();
@@ -162,4 +201,17 @@ public class PhongDAO {
         }
         return ds;
     }
+    public boolean updateTrangThai(String maPhong, String trangThai) {
+    String sql = "UPDATE PHONG SET TrangThai = ? WHERE MaPhong = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setNString(1, trangThai);
+        ps.setString(2, maPhong);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+  
 }

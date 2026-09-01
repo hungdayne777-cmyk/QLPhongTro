@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.HopDong;
+import model.Phong;
 import util.DBConnection;
 
 /**
@@ -20,7 +21,10 @@ import util.DBConnection;
  */
 public class HopDongDAO {
 
-   public List<HopDong> findAll() {
+    private PhongDAO pDAO = new PhongDAO();
+    private NguoiThueDAO ntDAO = new NguoiThueDAO();
+
+    public List<HopDong> findAll() {
         List<HopDong> ds = new ArrayList<>();
         String sql = "SELECT * FROM HOPDONG";
 
@@ -90,7 +94,7 @@ public class HopDongDAO {
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-           ps.setString(1, p.getMaHD());
+            ps.setString(1, p.getMaHD());
             ps.setString(2, p.getMaNT());
             ps.setString(3, p.getMaPhong());
             ps.setDate(4, p.getNgayBD() != null ? new java.sql.Date(p.getNgayBD().getTime()) : null);
@@ -107,63 +111,79 @@ public class HopDongDAO {
     }
 
     public boolean update(HopDong p) {
-        String sql = "UPDATE HOPDONG SET MaNT = ?,MaPhong = ?, NgayBatDau = ?,NgayKetThuc = ?, GiaThue = ?, TrangThai = ? WHERE MaHD = ?";
+        String sql = "UPDATE HOPDONG SET MaNT = ?, MaPhong = ?, NgayBatDau = ?, NgayKetThuc = ?, GiaThue = ?, TrangThai = ? WHERE MaHD = ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, p.getMaNT());
             ps.setString(2, p.getMaPhong());
-            ps.setDate(3, new java.sql.Date(p.getNgayBD().getTime()));
-            ps.setDate(4, new java.sql.Date(p.getNgayKT().getTime()));
+
+            // Kiểm tra tránh NullPointer nếu chưa chọn ngày
+            if (p.getNgayBD() != null) {
+                ps.setDate(3, new java.sql.Date(p.getNgayBD().getTime()));
+            } else {
+                ps.setNull(3, java.sql.Types.DATE);
+            }
+
+            if (p.getNgayKT() != null) {
+                ps.setDate(4, new java.sql.Date(p.getNgayKT().getTime()));
+            } else {
+                ps.setNull(4, java.sql.Types.DATE);
+            }
+
             ps.setDouble(5, p.getGiaThue());
-            ps.setString(6, p.getTrangThai());
+
+            // Dùng setNString cho dữ liệu Tiếng Việt (NVARCHAR)
+            ps.setNString(6, p.getTrangThai());
             ps.setString(7, p.getMaHD());
+
             int rows = ps.executeUpdate();
             return rows > 0;
 
         } catch (Exception e) {
             System.out.println("Lỗi khi cập nhật dữ liệu: " + e.getMessage());
+            e.printStackTrace(); // Nên in đầy đủ stack trace để dễ debug lỗi SQL
         }
         return false;
     }
 
     public List<HopDong> findSapHetHan(int soNgay) {
         List<HopDong> ds = new ArrayList<>();
-    // Sửa N'Đang hiệu lực' đúng theo dữ liệu trong SQL
-    // Dùng DATEDIFF để lọc các hợp đồng có Ngày Kết Thúc trong vòng N ngày tới hoặc đã quá hạn
-    String sql = "SELECT * FROM HOPDONG WHERE TrangThai = N'Đang hiệu lực' "
-               + "AND DATEDIFF(day, GETDATE(), NgayKetThuc) <= ?";
-    
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        
-        ps.setInt(1, soNgay);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                ds.add(new HopDong(
-                    rs.getString("MaHD"),
-                    rs.getString("MaNT"),
-                    rs.getString("MaPhong"),
-                    rs.getDate("NgayBatDau"),   // Đã khớp tên cột NgayBatDau
-                    rs.getDate("NgayKetThuc"),  // Đã khớp tên cột NgayKetThuc
-                    rs.getDouble("GiaThue"),
-                    rs.getString("TrangThai")
-                ));
+
+        // Thêm điều kiện DATEDIFF >= 0 để chặn các hợp đồng đã hết hạn trong quá khứ
+        String sql = "SELECT * FROM HOPDONG WHERE TrangThai = N'Đang hiệu lực' "
+                + "AND DATEDIFF(day, GETDATE(), NgayKetThuc) BETWEEN 0 AND ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, soNgay);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ds.add(new HopDong(
+                            rs.getString("MaHD"),
+                            rs.getString("MaNT"),
+                            rs.getString("MaPhong"),
+                            rs.getDate("NgayBatDau"),
+                            rs.getDate("NgayKetThuc"),
+                            rs.getDouble("GiaThue"),
+                            rs.getString("TrangThai")
+                    ));
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("Lỗi HopDongDAO.findSapHetHan: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Lỗi HopDongDAO.findSapHetHan: " + e.getMessage());
-    }
-    return ds;
+        return ds;
     }
 
     public List<HopDong> findByName(String name) {
         List<HopDong> ds = new ArrayList<>();
-        String sql = "SELECT * FROM HOPDONG WHERE MaHD LIKE ?";
+        String sql = "SELECT * FROM HOPDONG WHERE MaHD LIKE ? OR MaNT LIKE ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, "%" + name + "%");
+            ps.setString(2, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String maHD = rs.getString("MaHD");
@@ -183,4 +203,82 @@ public class HopDongDAO {
         }
         return ds;
     }
+
+    public boolean hasActiveContract(String maPhong) {
+        String sql = "SELECT COUNT(*) FROM HOPDONG WHERE LTRIM(RTRIM(MaPhong)) = LTRIM(RTRIM(?)) AND TrangThai = N'Đang hiệu lực'";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maPhong.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void capNhatGiaHopDongKhiThayDoiNguoi(String maPhong) {
+        Phong phong = pDAO.findById(maPhong);
+        if (phong == null) {
+            return;
+        }
+
+        // Chỉ tính lại tiền nếu phòng đó đặt loại giá là "Theo đầu người"
+        if ("Theo đầu người".equalsIgnoreCase(phong.getLoaiGia())) {
+            int soNguoiO = ntDAO.countNguoiThueByMaPhong(maPhong);
+            double giaThueMoi = phong.getGiaPhong() * soNguoiO;
+
+            // Cập nhật lại hợp đồng đang hiệu lực của phòng này
+            String sql = "UPDATE HOPDONG SET GiaThue = ? WHERE LTRIM(RTRIM(MaPhong)) = LTRIM(RTRIM(?)) AND TrangThai = N'Đang hiệu lực'";
+            try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setDouble(1, giaThueMoi);
+                ps.setString(2, maPhong.trim());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public List<HopDong> getDanhSachHopDongDangHieuLuc() {
+        List<HopDong> list = new ArrayList<>();
+        String sql = "SELECT * FROM HOPDONG WHERE TrangThai = N'Đang hiệu lực'";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                HopDong hd = new HopDong();
+
+                hd.setMaHD(rs.getString("MaHD"));
+                hd.setMaPhong(rs.getString("MaPhong"));
+                hd.setMaNT(rs.getString("MaNT"));
+                hd.setGiaThue(rs.getDouble("GiaThue"));
+                hd.setNgayBD(rs.getDate("NgayBatDau"));
+                hd.setNgayKT(rs.getDate("NgayKetThuc"));
+                hd.setTrangThai(rs.getString("TrangThai"));
+
+                list.add(hd);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public boolean updateGiaThueByMaPhong(String maPhong, double giaThueMoi) {
+    String sql = "UPDATE HOPDONG SET GiaThue = ? WHERE MaPhong = ? AND TrangThai = N'Đang hiệu lực'";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setDouble(1, giaThueMoi);
+        ps.setString(2, maPhong);
+        
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 }

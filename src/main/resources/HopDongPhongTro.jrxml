@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="HopDongPhongTro" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" 
+              whenNoDataType="AllSectionsNoDetail">
+    
+    <!-- 1. Tham số truyền từ Java -->
+    <parameter name="MaHD" class="java.lang.String"/>
+
+    <!-- 2. Truy vấn dữ liệu từ bảng HOPDONG -->
+    <queryString>
+     <![CDATA[
+        SELECT hd.MaHD, hd.MaNT, nt.HoTen AS TenNguoiThue, hd.MaPhong, 
+               hd.NgayBatDau, hd.NgayKetThuc, hd.GiaThue, hd.TrangThai
+        FROM HOPDONG hd
+        LEFT JOIN NGUOITHUE nt ON hd.MaNT = nt.MaNT
+        WHERE hd.MaHD = $P{MaHD}
+    ]]>
+    </queryString>
+
+    <!-- 3. Khai báo các Field -->
+    <field name="MaHD" class="java.lang.String"/>
+    <field name="MaNT" class="java.lang.String"/>
+    <field name="MaPhong" class="java.lang.String"/>
+    <field name="NgayBatDau" class="java.sql.Date"/>
+    <field name="NgayKetThuc" class="java.sql.Date"/>
+    <field name="GiaThue" class="java.lang.Double"/>
+    <field name="TrangThai" class="java.lang.String"/>
+    <field name="TenNguoiThue" class="java.lang.String"/>
+    <!-- 4. Tiêu đề Hợp Đồng -->
+    <title>
+        <band height="70">
+            <staticText>
+                <reportElement x="0" y="10" width="555" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[HỢP ĐỒNG THUÊ PHÒNG TRỌ]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <!-- 5. Chi tiết nội dung Hợp Đồng -->
+    <detail>
+        <band height="300">
+            <!-- Mã Hợp Đồng -->
+            <staticText>
+                <reportElement x="30" y="10" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Mã Hợp Đồng:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="170" y="10" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{MaHD}]]></textFieldExpression>
+            </textField>
+
+            <!-- Mã Người Thuê -->
+            <staticText>
+                <reportElement x="30" y="40" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Mã Người Thuê:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="170" y="40" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{MaNT}]]></textFieldExpression>
+            </textField>
+            <!-- Tên Người Thuê -->
+            <staticText>
+                <reportElement x="30" y="65" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Họ Và Tên Khách:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="170" y="65" width="200" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{TenNguoiThue}]]></textFieldExpression>
+            </textField>
+            <!-- Mã Phòng -->
+            <staticText>
+                <reportElement x="30" y="90" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Mã Phòng:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="170" y="90" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{MaPhong}]]></textFieldExpression>
+            </textField>
+
+            <!-- Đường kẻ xám phân cách -->
+            <line>
+                <reportElement x="30" y="100" width="495" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </graphicElement>
+            </line>
+
+            <!-- Ngày Bắt Đầu -->
+            <staticText>
+                <reportElement x="30" y="115" width="130" height="20"/>
+                <text><![CDATA[Ngày Bắt Đầu:]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="170" y="115" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{NgayBatDau}]]></textFieldExpression>
+            </textField>
+
+            <!-- Ngày Kết Thúc -->
+            <staticText>
+                <reportElement x="30" y="145" width="130" height="20"/>
+                <text><![CDATA[Ngày Kết Thúc:]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="170" y="145" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{NgayKetThuc}]]></textFieldExpression>
+            </textField>
+
+            <!-- Giá Thuê (Đã sửa lại đúng cấu trúc XML chuẩn) -->
+            <staticText>
+                <reportElement x="30" y="175" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Giá Thuê / Tháng:]]></text>
+            </staticText>
+            <textField pattern="#,##0 VNĐ">
+                <reportElement x="170" y="175" width="200" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{GiaThue}]]></textFieldExpression>
+            </textField>
+
+            <!-- Trạng Thái Hợp Đồng -->
+            <staticText>
+                <reportElement x="30" y="205" width="130" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Trạng Thái Hợp Đồng:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="170" y="205" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{TrangThai}]]></textFieldExpression>
+            </textField>
+
+            <!-- Đường kẻ đậm chốt hợp đồng -->
+            <line>
+                <reportElement x="30" y="240" width="495" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="1.5" lineColor="#000000"/>
+                </graphicElement>
+            </line>
+        </band>
+    </detail>
+</jasperReport>

@@ -32,6 +32,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
         lblLogin = new javax.swing.JLabel();
         passMK = new javax.swing.JPasswordField();
+        chkHienMK = new javax.swing.JCheckBox();
         txtUName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -48,6 +49,12 @@ public class LoginFrame extends javax.swing.JFrame {
         lblLogin.setText("LOGIN");
         getContentPane().add(lblLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 50, 130, 80));
         getContentPane().add(passMK, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 340, 30));
+
+        chkHienMK.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        chkHienMK.setForeground(java.awt.Color.white);
+        chkHienMK.setText("Hiện Mật Khẩu");
+        chkHienMK.addActionListener(this::chkHienMKActionPerformed);
+        getContentPane().add(chkHienMK, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 200, -1, -1));
         getContentPane().add(txtUName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 340, 30));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -109,6 +116,14 @@ public class LoginFrame extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btDangNhapActionPerformed
 
+    private void chkHienMKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkHienMKActionPerformed
+       if (chkHienMK.isSelected()) {
+    passMK.setEchoChar((char) 0); // Hiện mật khẩu
+} else {
+    passMK.setEchoChar('*');      // Che mật khẩu
+}
+    }//GEN-LAST:event_chkHienMKActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -131,6 +146,7 @@ public class LoginFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel anhNenLogin;
     private javax.swing.JButton btDangNhap;
+    private javax.swing.JCheckBox chkHienMK;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblLogin;

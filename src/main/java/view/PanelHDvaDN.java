@@ -91,6 +91,8 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         btThemHD = new javax.swing.JButton();
         btnXacnhanTT = new javax.swing.JButton();
         btSuaHD = new javax.swing.JButton();
+        txtKeyword = new javax.swing.JTextField();
+        btTimHoaDon = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Danh sách hóa đơn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), java.awt.Color.blue)); // NOI18N
 
@@ -324,6 +326,8 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jLabel12.setText("Đơn Giá Điện ");
 
         txtdgdien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        txtdgdien.addActionListener(this::txtdgdienActionPerformed);
+        txtdgdien.addPropertyChangeListener(this::txtdgdienPropertyChange);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -366,6 +370,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jLabel13.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel13.setText("Tiền Phòng");
 
+        txtTienPhong.setEditable(false);
         txtTienPhong.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -397,6 +402,11 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         btSuaHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bill edit.png"))); // NOI18N
         btSuaHD.setText("Sửa Hóa Đơn");
         btSuaHD.addActionListener(this::btSuaHDActionPerformed);
+
+        btTimHoaDon.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btTimHoaDon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
+        btTimHoaDon.setText("Tìm");
+        btTimHoaDon.addActionListener(this::btTimHoaDonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -430,7 +440,12 @@ public class PanelHDvaDN extends javax.swing.JPanel {
                                                     .addComponent(btThemHD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                     .addComponent(btLamMoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(btnXacnhanTT)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(btnXacnhanTT)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(btTimHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(btSuaHD, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -456,7 +471,11 @@ public class PanelHDvaDN extends javax.swing.JPanel {
                                     .addComponent(jLabel14)
                                     .addComponent(txtTongTien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnXacnhanTT))
+                                .addComponent(btnXacnhanTT)
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btTimHoaDon)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -482,92 +501,59 @@ public class PanelHDvaDN extends javax.swing.JPanel {
             String MaHoaDon = tblHoaDon.getValueAt(row, 0).toString();
             String MaHD = tblHoaDon.getValueAt(row, 1).toString();
 
-            int Thang = Integer.parseInt(
-                    tblHoaDon.getValueAt(row, 2).toString()
-            );
+            int Thang = Integer.parseInt(tblHoaDon.getValueAt(row, 2).toString());
+            int Nam = Integer.parseInt(tblHoaDon.getValueAt(row, 3).toString());
 
-            int Nam = Integer.parseInt(
-                    tblHoaDon.getValueAt(row, 3).toString()
-            );
+            double csDC = Double.parseDouble(tblHoaDon.getValueAt(row, 4).toString());
+            double csDM = Double.parseDouble(tblHoaDon.getValueAt(row, 5).toString());
+            double dgDien = Double.parseDouble(tblHoaDon.getValueAt(row, 6).toString());
 
-            double csDC = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 4).toString()
-            );
+            double csNC = Double.parseDouble(tblHoaDon.getValueAt(row, 7).toString());
+            double csNM = Double.parseDouble(tblHoaDon.getValueAt(row, 8).toString());
+            double dgNuoc = Double.parseDouble(tblHoaDon.getValueAt(row, 9).toString());
 
-            double csDM = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 5).toString()
-            );
-
-            double dgDien = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 6).toString()
-            );
-
-            double csNC = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 7).toString()
-            );
-
-            double csNM = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 8).toString()
-            );
-
-            double dgNuoc = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 9).toString()
-            );
-
-            double TienPhong = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 10).toString()
-            );
-
-            double TongTien = Double.parseDouble(
-                    tblHoaDon.getValueAt(row, 11).toString()
-            );
+            double TienPhong = Double.parseDouble(tblHoaDon.getValueAt(row, 10).toString());
+            double TongTien = Double.parseDouble(tblHoaDon.getValueAt(row, 11).toString());
 
             String strNgay = tblHoaDon.getValueAt(row, 12).toString();
             String TrangThaiTT = tblHoaDon.getValueAt(row, 13).toString();
 
             txtMaHoaDon.setText(MaHoaDon);
-
             SpnThang.setValue(Integer.valueOf(Thang));
             SpnNam.setValue(Integer.valueOf(Nam));
 
-            DecimalFormat df = new DecimalFormat("#.##");
+            // Kích hoạt chọn ComboBox trước
+            Chon_HopDong(MaHD);
+            Chon_TT(TrangThaiTT);
 
+            // Đổ dữ liệu vào TextField sau để không bị Action Event của ComboBox đè dữ liệu
+            DecimalFormat df = new DecimalFormat("#.##");
             txtdiencu.setText(df.format(csDC));
             txtdienmoi.setText(df.format(csDM));
             txtdgdien.setText(df.format(dgDien));
 
             txtnuoccu.setText(df.format(csNC));
             txtnuocmoi.setText(df.format(csNM));
-            txtdgnuoc.setText(df.format(dgNuoc));;
+            txtdgnuoc.setText(df.format(dgNuoc));
 
             txtTienPhong.setText(df.format(TienPhong));
             txtTongTien.setText(df.format(TongTien));
 
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
                 Date ngayHH = sdf.parse(strNgay);
-
                 dtcNgayHH.setDate(ngayHH);
-
             } catch (Exception e) {
                 dtcNgayHH.setDate(null);
             }
 
-            Chon_HopDong(MaHD);
-            Chon_TT(TrangThaiTT);
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Lỗi khi hiển thị dữ liệu: " + e.getMessage()
-            );
+            JOptionPane.showMessageDialog(this, "Lỗi khi hiển thị dữ liệu: " + e.getMessage());
+        }
 
     }//GEN-LAST:event_tblHoaDonMouseClicked
-    }
+
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
         if (CboHopDong.getItemCount() > 0) {
             CboHopDong.setSelectedIndex(-1);
@@ -599,7 +585,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
 
         String maHD = CboHopDong.getSelectedItem().toString();
         HoaDonDAO dao = new HoaDonDAO();
-
+        HopDongDAO hdDAO = new HopDongDAO();
         txtdiencu.setEditable(false);
         txtnuoccu.setEditable(false);
 
@@ -611,6 +597,13 @@ public class PanelHDvaDN extends javax.swing.JPanel {
 
         txtdiencu.setText(String.valueOf(chiSoCu[0]));
         txtnuoccu.setText(String.valueOf(chiSoCu[1]));
+        HopDong hd = hdDAO.findById(maHD); // 2. Lấy thông tin Hợp Đồng
+        if (hd != null) {
+            txtTienPhong.setText(String.format("%.0f", hd.getGiaThue())); // 3. Gán Tiền Phòng
+        } else {
+            txtTienPhong.setText("0");
+        }
+        Gan_Du_lieu();
     }//GEN-LAST:event_CboHopDongActionPerformed
 
     private void dtcNgayHHPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtcNgayHHPropertyChange
@@ -886,6 +879,43 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         ExcelExporter.exportJTableToExcel(tblHoaDon, "DanhSachHoaDon");
     }//GEN-LAST:event_btXuatExcelActionPerformed
 
+    private void btTimHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimHoaDonActionPerformed
+        // TODO add your handling code here:
+        String keyword = txtKeyword.getText().trim();
+        DefaultTableModel model = (DefaultTableModel) tblHoaDon.getModel();
+        model.setRowCount(0);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+
+        List<HoaDon> list = hoaDonDao.findByName(keyword);
+        for (HoaDon hd : list) {
+            String strNgayHH = (hd.getNgayHH() != null) ? sdf.format(hd.getNgayHH()) : "";
+
+            model.addRow(new Object[]{
+                hd.getMaHoaDon(),
+                hd.getMaHD(),
+                hd.getThang(),
+                hd.getNam(),
+                hd.getCSDienCu(),
+                hd.getCSDienMoi(),
+                hd.getGiaDien(),
+                hd.getCSNuocCu(),
+                hd.getCSNuocMoi(),
+                hd.getGiaNuoc(),
+                hd.getTienPhong(),
+                hd.getTongTien(),
+                strNgayHH,
+                hd.getTrangThaiTT(),});
+        }
+    }//GEN-LAST:event_btTimHoaDonActionPerformed
+
+    private void txtdgdienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdgdienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtdgdienActionPerformed
+
+    private void txtdgdienPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtdgdienPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtdgdienPropertyChange
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboHopDong;
@@ -895,6 +925,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     private javax.swing.JButton btLamMoi;
     private javax.swing.JButton btSuaHD;
     private javax.swing.JButton btThemHD;
+    private javax.swing.JButton btTimHoaDon;
     private javax.swing.JButton btXuatExcel;
     private javax.swing.JButton btnXacnhanTT;
     private javax.swing.JComboBox<String> cboTrangThaiTT;
@@ -919,6 +950,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblHoaDon;
+    private javax.swing.JTextField txtKeyword;
     private javax.swing.JTextField txtMaHoaDon;
     private javax.swing.JTextField txtTienPhong;
     private javax.swing.JTextField txtTongTien;
@@ -936,7 +968,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         model = (DefaultTableModel) tblHoaDon.getModel();
 
         model.setColumnIdentifiers(new Object[]{
-            "Mã Hóa Đơn", "Mã HĐ", "Thang", "Nam", "CS Điện Cũ", "Cs Điện Mới", "Đơn Giá Điện", "CS Nước Cũ",
+            "Mã Hóa Đơn", "Mã HĐ", "Tháng", "Năm", "CS Điện Cũ", "Cs Điện Mới", "Đơn Giá Điện", "CS Nước Cũ",
             "Cs Nước Mới", "Đơn Giá Nước", "Tiền Phòng", "Tổng Tiền", "Ngày Hết Hạn", "Trạng Thái Thanh Toán"
         });
 
@@ -967,12 +999,12 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }
 
     private void Khoi_Tao_ComboBoxHD() {
-       CboHopDong.removeAllItems();
-    HopDongDAO dao = new HopDongDAO();
-    List<HopDong> list = dao.findAll(); // Lấy danh sách từ HopDongDAO
-    for (HopDong hd : list) {
-        CboHopDong.addItem(hd.getMaHD()); // Lấy chính xác mã hợp đồng từ Model HopDong
-    }
+        CboHopDong.removeAllItems();
+        HopDongDAO dao = new HopDongDAO();
+        List<HopDong> list = dao.getDanhSachHopDongDangHieuLuc(); // Lấy danh sách từ HopDongDAO
+        for (HopDong hd : list) {
+            CboHopDong.addItem(hd.getMaHD()); // Lấy chính xác mã hợp đồng từ Model HopDong
+        }
     }
 
     private void Chon_TT(String TrangThaiTT) {
@@ -1078,4 +1110,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
 
         return Double.parseDouble(value);
     }
+    public javax.swing.JTable getTblHoaDon() {
+    return tblHoaDon; // Thay tblHoaDon bằng đúng tên variable JTable của bạn
+}
 }

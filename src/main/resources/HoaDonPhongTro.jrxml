@@ -8,25 +8,30 @@
     <!-- 1. Tham số truyền từ Java -->
     <parameter name="MaHoaDon" class="java.lang.String"/>
 
-    <!-- 2. Truy vấn dữ liệu theo MaHoaDon -->
+    <!-- 2. Truy vấn dữ liệu liên kết HOADON -> HOPDONG -> NGUOITHUE -->
     <queryString>
         <![CDATA[
-           SELECT *, 
-               ABS(CSDienMoi - CSDienCu) * DonGiaDien AS TienDien, 
-               ABS(CSNuocMoi - CSNuocCu) * DonGiaNuoc AS TienNuoc 
-        FROM HoaDon 
-        WHERE MaHoaDon = $P{MaHoaDon}
+            SELECT 
+                h.*, 
+                nt.HoTen AS TenKhachHang,
+                ABS(h.CSDienMoi - h.CSDienCu) * h.DonGiaDien AS TienDien, 
+                ABS(h.CSNuocMoi - h.CSNuocCu) * h.DonGiaNuoc AS TienNuoc 
+            FROM HOADON h
+            LEFT JOIN HOPDONG hd ON h.MaHD = hd.MaHD
+            LEFT JOIN NGUOITHUE nt ON hd.MaNT = nt.MaNT
+            WHERE h.MaHoaDon = $P{MaHoaDon}
         ]]>
     </queryString>
 
     <!-- 3. Khai báo các Field đúng với CSDL -->
     <field name="MaHoaDon" class="java.lang.String"/>
+    <field name="TenKhachHang" class="java.lang.String"/>
     <field name="TrangThaiThanhToan" class="java.lang.String"/>
-    <field name="CsDienCu" class="java.lang.Double"/>
-    <field name="CsDienMoi" class="java.lang.Double"/>
+    <field name="CSDienCu" class="java.lang.Double"/>
+    <field name="CSDienMoi" class="java.lang.Double"/>
     <field name="DonGiaDien" class="java.lang.Double"/>
-    <field name="CsNuocCu" class="java.lang.Double"/>
-    <field name="CsNuocMoi" class="java.lang.Double"/>
+    <field name="CSNuocCu" class="java.lang.Double"/>
+    <field name="CSNuocMoi" class="java.lang.Double"/>
     <field name="DonGiaNuoc" class="java.lang.Double"/>
     <field name="TienPhong" class="java.lang.Double"/>
     <field name="TienDien" class="java.lang.Double"/>
@@ -48,7 +53,7 @@
 
     <!-- 5. Chi tiết nội dung Hóa Đơn -->
     <detail>
-        <band height="280">
+        <band height="310">
             <!-- Mã Hóa Đơn -->
             <staticText>
                 <reportElement x="30" y="10" width="120" height="20"/>
@@ -60,21 +65,33 @@
                 <textFieldExpression><![CDATA[$F{MaHoaDon}]]></textFieldExpression>
             </textField>
 
-            <!-- Trạng Thái Thanh Toán -->
+            <!-- Khách Thuê (Lấy từ bảng NGUOITHUE.HoTen) -->
             <staticText>
                 <reportElement x="30" y="35" width="120" height="20"/>
                 <textElement><font isBold="true"/></textElement>
-                <text><![CDATA[Trạng Thái:]]></text>
+                <text><![CDATA[Khách Thuê:]]></text>
             </staticText>
             <textField>
                 <reportElement x="160" y="35" width="200" height="20"/>
                 <textElement><font isBold="true"/></textElement>
-                <textFieldExpression><![CDATA[$F{TrangThaiThanhToan}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{TenKhachHang} != null ? $F{TenKhachHang} : "Chưa cập nhật"]]></textFieldExpression>
+            </textField>
+
+            <!-- Trạng Thái Thanh Toán -->
+            <staticText>
+                <reportElement x="30" y="60" width="120" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Trạng Thái:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="60" width="200" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{TrangThaiThanhToan} != null ? $F{TrangThaiThanhToan} : "Chưa thanh toán"]]></textFieldExpression>
             </textField>
 
             <!-- Đường kẻ xám nhạt -->
             <line>
-                <reportElement x="30" y="65" width="495" height="1"/>
+                <reportElement x="30" y="90" width="495" height="1"/>
                 <graphicElement>
                     <pen lineWidth="0.5" lineColor="#CCCCCC"/>
                 </graphicElement>
@@ -82,37 +99,46 @@
 
             <!-- Tiền Phòng -->
             <staticText>
-                <reportElement x="30" y="75" width="120" height="20"/>
+                <reportElement x="30" y="100" width="120" height="20"/>
                 <text><![CDATA[Tiền Phòng:]]></text>
             </staticText>
             <textField pattern="#,##0 VNĐ">
-                <reportElement x="160" y="75" width="200" height="20"/>
+                <reportElement x="160" y="100" width="200" height="20"/>
                 <textFieldExpression><![CDATA[$F{TienPhong}]]></textFieldExpression>
             </textField>
 
             <!-- Tiền Điện -->
             <staticText>
-                <reportElement x="30" y="105" width="120" height="20"/>
+                <reportElement x="30" y="130" width="120" height="20"/>
                 <text><![CDATA[Tiền Điện:]]></text>
             </staticText>
             <textField pattern="#,##0 VNĐ">
-                <reportElement x="160" y="105" width="200" height="20"/>
+                <reportElement x="160" y="130" width="200" height="20"/>
                 <textFieldExpression><![CDATA[$F{TienDien}]]></textFieldExpression>
             </textField>
 
             <!-- Tiền Nước -->
             <staticText>
-                <reportElement x="30" y="135" width="120" height="20"/>
+                <reportElement x="30" y="160" width="120" height="20"/>
                 <text><![CDATA[Tiền Nước:]]></text>
             </staticText>
             <textField pattern="#,##0 VNĐ">
-                <reportElement x="160" y="135" width="200" height="20"/>
+                <reportElement x="160" y="160" width="200" height="20"/>
                 <textFieldExpression><![CDATA[$F{TienNuoc}]]></textFieldExpression>
+            </textField>
+              <!-- Tiền Phòng -->
+            <staticText>
+                <reportElement x="30" y="100" width="120" height="20"/>
+                <text><![CDATA[Tiền Phòng:]]></text>
+            </staticText>
+            <textField pattern="#,##0 VNĐ">
+                <reportElement x="160" y="100" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{TienPhong}]]></textFieldExpression>
             </textField>
 
             <!-- Đường kẻ nét đứt -->
             <line>
-                <reportElement x="30" y="170" width="495" height="1"/>
+                <reportElement x="30" y="195" width="495" height="1"/>
                 <graphicElement>
                     <pen lineWidth="1.0" lineStyle="Dashed" lineColor="#000000"/>
                 </graphicElement>
@@ -120,19 +146,19 @@
 
             <!-- TỔNG TIỀN -->
             <staticText>
-                <reportElement x="30" y="185" width="120" height="25"/>
+                <reportElement x="30" y="210" width="120" height="25"/>
                 <textElement><font size="12" isBold="true"/></textElement>
                 <text><![CDATA[TỔNG TIỀN:]]></text>
             </staticText>
             <textField pattern="#,##0 VNĐ">
-                <reportElement x="160" y="185" width="200" height="25"/>
+                <reportElement x="160" y="210" width="200" height="25"/>
                 <textElement><font size="12" isBold="true"/></textElement>
                 <textFieldExpression><![CDATA[$F{TongTien}]]></textFieldExpression>
             </textField>
 
             <!-- Đường kẻ đậm chốt hóa đơn -->
             <line>
-                <reportElement x="30" y="220" width="495" height="1"/>
+                <reportElement x="30" y="245" width="495" height="1"/>
                 <graphicElement>
                     <pen lineWidth="1.5" lineColor="#000000"/>
                 </graphicElement>

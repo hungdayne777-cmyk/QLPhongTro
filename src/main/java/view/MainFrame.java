@@ -4,8 +4,9 @@
  */
 package view;
 
-
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import util.ExcelExporter;
 
 /**
  *
@@ -14,38 +15,50 @@ import javax.swing.ImageIcon;
 public class MainFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
-private String loggedInUser;
-
-    // 2. Tạo Constructor nhận tham số username
-    public MainFrame(String username) {
-        this();
-        this.loggedInUser = username;
-        initComponents();
-        
-        // Căn giữa màn hình
-        setLocationRelativeTo(null); 
-        
-        // Hiển thị tên tài khoản lên JLabel
-        lblTaiKhoan.setText("ADMIN: "+this.loggedInUser);
-    }
-    /**
-     * Creates new form MainFrame
-     */
+    private String loggedInUser;
     private PanelTrangChuUI panelTrangChuUI;
     private PanelQLPhongUI panelQLPhongUI;
     private PanelNguoiThueUI panelNguoiThueUI;
     private PanelHopDongUI panelHopDongUI;
-    private PanelHDvaDN panelHdDnUI;
+    private PanelHDvaDN panelHdDnUI; // Chú ý tên class của bạn là PanelHDvaDN
+    // 2. Tạo Constructor nhận tham số username
 
+    public MainFrame(String username) {
+        this(); // Gọi constructor mặc định bên dưới (đã gồm initComponents và khởi tạo Panel)
+        this.loggedInUser = username;
+
+        // Hiển thị tên tài khoản lên JLabel
+        if (lblTaiKhoan != null) {
+            lblTaiKhoan.setText("ADMIN: " + this.loggedInUser);
+        }
+    }
+
+// 2. Constructor mặc định
     public MainFrame() {
         initComponents();
-        //tạo tab
-        TabChucNang.addTab("Trang Chủ", new PanelTrangChuUI());
-        TabChucNang.addTab("Quản Lý Phòng", new PanelQLPhongUI());
-        TabChucNang.addTab("Người Thuê", new PanelNguoiThueUI());
-        TabChucNang.addTab("Hợp Đồng", new PanelHopDongUI());
-        TabChucNang.addTab("Hóa Đơn & Điện Nước", new PanelHDvaDN());
 
+        // SỰ KIỆN XUẤT FILE EXCEL
+        jMenuXuatPhongTro.addActionListener(this::jMenuXuatPhongTroActionPerformed);
+        jMenuXuatNgThue.addActionListener(this::jMenuXuatNgThueActionPerformed);
+        jMenuXuatHopDong.addActionListener(this::jMenuXuatHopDongActionPerformed);
+        jMenuXuatHD.addActionListener(this::jMenuXuatHDActionPerformed);
+        // --- ĐĂNG KÝ SỰ KIỆN CHO NÚT ABOUT US ---
+        btAbout.addActionListener(this::btAboutActionPerformed);
+        // Đăng ký sự kiện mở Popup khi click vào btHelp
+        btHelp.addActionListener(this::btHelpActionPerformed);
+        // BẮT BUỘC: Khởi tạo biến Panel và gán vào thuộc tính của Class
+        panelTrangChuUI = new PanelTrangChuUI();
+        panelQLPhongUI = new PanelQLPhongUI();
+        panelNguoiThueUI = new PanelNguoiThueUI();
+        panelHopDongUI = new PanelHopDongUI();
+        panelHdDnUI = new PanelHDvaDN();
+
+        // Thêm các biến Panel ĐÃ KHỞI TẠO ở trên vào Tab
+        TabChucNang.addTab("Trang Chủ", panelTrangChuUI);
+        TabChucNang.addTab("Quản Lý Phòng", panelQLPhongUI);
+        TabChucNang.addTab("Người Thuê", panelNguoiThueUI);
+        TabChucNang.addTab("Hợp Đồng", panelHopDongUI);
+        TabChucNang.addTab("Hóa Đơn & Điện Nước", panelHdDnUI);
         //icon
         TabChucNang.setIconAt(0, new ImageIcon(getClass().getResource("/icons/home.png")));
         TabChucNang.setIconAt(1, new ImageIcon(getClass().getResource("/icons/key.png")));
@@ -63,9 +76,72 @@ private String loggedInUser;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupXuatFile = new javax.swing.JPopupMenu();
+        jMenuXuatPhongTro = new javax.swing.JMenuItem();
+        jMenuXuatNgThue = new javax.swing.JMenuItem();
+        jMenuXuatHopDong = new javax.swing.JMenuItem();
+        jMenuXuatHD = new javax.swing.JMenuItem();
+        jPopupHelp = new javax.swing.JPopupMenu();
+        jMenuHelpPhongTro = new javax.swing.JMenuItem();
+        jMenuHelpNgThue = new javax.swing.JMenuItem();
+        jMenuHelpHopDong = new javax.swing.JMenuItem();
+        jMenuHelpHD = new javax.swing.JMenuItem();
         jLabel1 = new javax.swing.JLabel();
         TabChucNang = new javax.swing.JTabbedPane();
         lblTaiKhoan = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        btFile = new javax.swing.JButton();
+        btAbout = new javax.swing.JButton();
+        btHelp = new javax.swing.JButton();
+        btFile1 = new javax.swing.JButton();
+
+        jMenuXuatPhongTro.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuXuatPhongTro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/key.png"))); // NOI18N
+        jMenuXuatPhongTro.setText("Xuất danh sách Phòng");
+        jMenuXuatPhongTro.addActionListener(this::jMenuXuatPhongTroActionPerformed);
+        jPopupXuatFile.add(jMenuXuatPhongTro);
+
+        jMenuXuatNgThue.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuXuatNgThue.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teamwork.png"))); // NOI18N
+        jMenuXuatNgThue.setText("Xuất danh sách Người Thuê");
+        jMenuXuatNgThue.addActionListener(this::jMenuXuatNgThueActionPerformed);
+        jPopupXuatFile.add(jMenuXuatNgThue);
+
+        jMenuXuatHopDong.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuXuatHopDong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/contract.png"))); // NOI18N
+        jMenuXuatHopDong.setText("Xuất danh sách Hợp Đồng");
+        jMenuXuatHopDong.addActionListener(this::jMenuXuatHopDongActionPerformed);
+        jPopupXuatFile.add(jMenuXuatHopDong);
+
+        jMenuXuatHD.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuXuatHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bill.png"))); // NOI18N
+        jMenuXuatHD.setText("Xuất danh sách Hóa Đơn");
+        jMenuXuatHD.addActionListener(this::jMenuXuatHDActionPerformed);
+        jPopupXuatFile.add(jMenuXuatHD);
+
+        jMenuHelpPhongTro.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuHelpPhongTro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/key.png"))); // NOI18N
+        jMenuHelpPhongTro.setText("Xuất danh sách Phòng");
+        jMenuHelpPhongTro.addActionListener(this::jMenuHelpPhongTroActionPerformed);
+        jPopupHelp.add(jMenuHelpPhongTro);
+
+        jMenuHelpNgThue.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuHelpNgThue.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teamwork.png"))); // NOI18N
+        jMenuHelpNgThue.setText("Xuất danh sách Người Thuê");
+        jMenuHelpNgThue.addActionListener(this::jMenuHelpNgThueActionPerformed);
+        jPopupHelp.add(jMenuHelpNgThue);
+
+        jMenuHelpHopDong.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuHelpHopDong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/contract.png"))); // NOI18N
+        jMenuHelpHopDong.setText("Xuất danh sách Hợp Đồng");
+        jMenuHelpHopDong.addActionListener(this::jMenuHelpHopDongActionPerformed);
+        jPopupHelp.add(jMenuHelpHopDong);
+
+        jMenuHelpHD.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuHelpHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bill.png"))); // NOI18N
+        jMenuHelpHD.setText("Xuất danh sách Hóa Đơn");
+        jMenuHelpHD.addActionListener(this::jMenuHelpHDActionPerformed);
+        jPopupHelp.add(jMenuHelpHD);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Phần Mềm Quản Lý Phòng Trọ");
@@ -84,30 +160,197 @@ private String loggedInUser;
 
         lblTaiKhoan.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
+        jToolBar1.setFloatable(true);
+        jToolBar1.setRollover(true);
+
+        btFile.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/excel-file.png"))); // NOI18N
+        btFile.setText("File");
+        btFile.setFocusable(false);
+        btFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btFile.addActionListener(this::btFileActionPerformed);
+        jToolBar1.add(btFile);
+
+        btAbout.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/information.png"))); // NOI18N
+        btAbout.setText("About Us");
+        btAbout.setFocusable(false);
+        btAbout.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btAbout.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btAbout.addActionListener(this::btAboutActionPerformed);
+        jToolBar1.add(btAbout);
+
+        btHelp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/question-mark.png"))); // NOI18N
+        btHelp.setText("Help");
+        btHelp.setFocusable(false);
+        btHelp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btHelp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btHelp.addActionListener(this::btHelpActionPerformed);
+        jToolBar1.add(btHelp);
+
+        btFile1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btFile1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dãnguat.png"))); // NOI18N
+        btFile1.setText("Đăng Xuất");
+        btFile1.setFocusable(false);
+        btFile1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btFile1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btFile1.addActionListener(this::btFile1ActionPerformed);
+        jToolBar1.add(btFile1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(TabChucNang)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(lblTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(725, 725, 725)
+                .addComponent(lblTaiKhoan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 936, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(TabChucNang)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(TabChucNang, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TabChucNang, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addGap(45, 45, 45))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFileActionPerformed
+        jPopupXuatFile.show(btFile, 0, btFile.getHeight());
+    }//GEN-LAST:event_btFileActionPerformed
+
+    private void jMenuXuatPhongTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuXuatPhongTroActionPerformed
+        if (panelQLPhongUI != null) {
+            JTable table = panelQLPhongUI.getTblPhongThue();
+            ExcelExporter.exportJTableToExcel(table, "DanhSachPhongTro");
+        }
+    }//GEN-LAST:event_jMenuXuatPhongTroActionPerformed
+
+    private void jMenuXuatNgThueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuXuatNgThueActionPerformed
+        if (panelNguoiThueUI != null) {
+            JTable table = panelNguoiThueUI.getTblNguoiThue();
+            ExcelExporter.exportJTableToExcel(table, "DanhSachNguoiThue");
+        }
+    }//GEN-LAST:event_jMenuXuatNgThueActionPerformed
+
+    private void jMenuXuatHopDongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuXuatHopDongActionPerformed
+        if (panelHopDongUI != null) {
+            JTable table = panelHopDongUI.getTblHopDong();
+            ExcelExporter.exportJTableToExcel(table, "DanhSachHopDong");
+        }
+    }//GEN-LAST:event_jMenuXuatHopDongActionPerformed
+
+    private void jMenuXuatHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuXuatHDActionPerformed
+        if (panelHdDnUI != null) {
+            JTable table = panelHdDnUI.getTblHoaDon();
+            ExcelExporter.exportJTableToExcel(table, "DanhSachHoaDon");
+        }
+    }//GEN-LAST:event_jMenuXuatHDActionPerformed
+
+    private void btAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAboutActionPerformed
+        String aboutMessage = """
+        ===========================================
+           ĐỀ TẢI KẾT THÚC MÔN HOC
+         PHẦN MỀM QUẢN LÝ PHÒNG TRỌ
+        ===========================================
+        Được phát triển bởi Sinh Viên : Nguyễn Thái Hưng & Đỗ Hoàng Tấn Tài
+           Tính năng chính:
+        - Quản lý danh sách phòng trọ & trạng thái
+        - Quản lý thông tin khách thuê
+        - Lập hợp đồng & quản lý dịch vụ hóa đơn
+        - Xuất báo cáo dữ liệu ra file Excel, in hóa đơn
+        
+        Cảm ơn bạn đã sử dụng phần mềm!
+        """;
+
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                aboutMessage,
+                "Thông Tin Phần Mềm - About Us",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
+    }//GEN-LAST:event_btAboutActionPerformed
+
+    private void jMenuHelpPhongTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHelpPhongTroActionPerformed
+        String msg = """
+        === HƯỚNG DẪN: QUẢN LÝ PHÒNG TRỌ ===
+        1. Thêm phòng: Nhập đầy đủ mã phòng, giá thuê, loại phòng rồi bấm 'Thêm'.
+        2. Sửa thông tin: Chọn phòng cần sửa trong bảng, cập nhật thông tin và bấm 'Sửa'.
+        3. Xóa phòng: Chọn phòng muốn xóa và xác nhận 'Xóa'.
+        4. Trạng thái: Kiểm tra phòng đã được thuê hay còn trống trên danh sách.
+        """;
+        javax.swing.JOptionPane.showMessageDialog(this, msg, "Trợ Giúp - Quản Lý Phòng Trọ", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuHelpPhongTroActionPerformed
+
+    private void jMenuHelpNgThueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHelpNgThueActionPerformed
+        String msg = """
+        === HƯỚNG DẪN: QUẢN LÝ NGƯỜI THUÊ ===
+        1. Thêm khách thuê: Nhập Họ tên, CCCD/CMND, SĐT và thông tin liên hệ.
+        2. Tra cứu: Sử dụng ô tìm kiếm để tra nhanh theo Tên hoặc Số CCCD.
+        3. Cập nhật thông tin: Chọn người thuê trên bảng để điều chỉnh thông tin cá nhân.
+        """;
+        javax.swing.JOptionPane.showMessageDialog(this, msg, "Trợ Giúp - Quản Lý Người Thuê", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuHelpNgThueActionPerformed
+
+    private void jMenuHelpHopDongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHelpHopDongActionPerformed
+        String msg = """
+        === HƯỚNG DẪN: QUẢN LÝ HỢP ĐỒNG ===
+        1. Tạo mới hợp đồng: Chọn Khách thuê + Phòng trọ, nhập Ngày bắt đầu & Ngày kết thúc
+        2. Gia hạn / Kết thúc: Cập nhật thời hạn hợp đồng hoặc thanh lý hợp đồng khi khách trả phòng.
+        3. In hợp đồng: Bấm nút 'In Hợp Đồng' để xuất bản xem trước và in bản cứng.
+        """;
+        javax.swing.JOptionPane.showMessageDialog(this, msg, "Trợ Giúp - Quản Lý Hợp Đồng", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuHelpHopDongActionPerformed
+
+    private void jMenuHelpHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHelpHDActionPerformed
+        String msg = """
+        === HƯỚNG DẪN: HÓA ĐƠN & ĐIỆN NƯỚC ===
+        1. Tỉnh tiền điện/nước: Nhập chỉ số điện/nước đầu kỳ và cuối kỳ của phòng.
+        2. Lập hóa đơn: Hệ thống tự động tính tổng tiền theo đơn giá cài đặt.
+        3. Thanh toán: Đánh dấu 'Đã thanh toán' sau khi thu tiền của khách.
+        """;
+        javax.swing.JOptionPane.showMessageDialog(this, msg, "Trợ Giúp - Hóa Đơn & Điện Nước", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuHelpHDActionPerformed
+
+    private void btHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHelpActionPerformed
+        jPopupHelp.show(btHelp, 0, btHelp.getHeight());
+    }//GEN-LAST:event_btHelpActionPerformed
+
+    private void btFile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFile1ActionPerformed
+      int confirm = javax.swing.JOptionPane.showConfirmDialog(
+        this, 
+        "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?", 
+        "Xác nhận Đăng Xuất", 
+        javax.swing.JOptionPane.YES_NO_OPTION,
+        javax.swing.JOptionPane.QUESTION_MESSAGE
+    );
+
+   
+    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+      
+        this.dispose(); 
+
+       
+        new LoginFrame().setVisible(true); 
+    }
+    }//GEN-LAST:event_btFile1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -135,7 +378,22 @@ private String loggedInUser;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane TabChucNang;
+    private javax.swing.JButton btAbout;
+    private javax.swing.JButton btFile;
+    private javax.swing.JButton btFile1;
+    private javax.swing.JButton btHelp;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenuItem jMenuHelpHD;
+    private javax.swing.JMenuItem jMenuHelpHopDong;
+    private javax.swing.JMenuItem jMenuHelpNgThue;
+    private javax.swing.JMenuItem jMenuHelpPhongTro;
+    private javax.swing.JMenuItem jMenuXuatHD;
+    private javax.swing.JMenuItem jMenuXuatHopDong;
+    private javax.swing.JMenuItem jMenuXuatNgThue;
+    private javax.swing.JMenuItem jMenuXuatPhongTro;
+    private javax.swing.JPopupMenu jPopupHelp;
+    private javax.swing.JPopupMenu jPopupXuatFile;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblTaiKhoan;
     // End of variables declaration//GEN-END:variables
 }

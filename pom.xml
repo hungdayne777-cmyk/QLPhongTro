@@ -53,4 +53,34 @@
         <version>6.21.0</version>
     </dependency>
       </dependencies>
+      <build>
+    <plugins>
+        <!-- Plugin đóng gói tất cả phụ thuộc thành 1 file JAR duy nhất -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <!-- ĐƯỜNG DẪN TỚI MÀN HÌNH CHẠY ĐẦU TIÊN (MAIN CLASS) -->
+                        <mainClass>view.LoginFrame</mainClass>
+                    </manifest>
+                </archive>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>make-assembly</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 </project>

@@ -18,9 +18,10 @@ public class HoaDon {
     private int Nam;
     private double CSDienCu;
     private double CSDienMoi;
+     private double GiaDien;
     private double CSNuocCu;
     private double CSNuocMoi;
-    private double GiaDien;
+   
     private double GiaNuoc;
     private double TienPhong;
     private double TongTien;
@@ -30,16 +31,16 @@ public class HoaDon {
     public HoaDon() {
     }
 
-    public HoaDon(String MaHoaDon, String MaHD, int Thang, int Nam, double CSDienCu, double CSDienMoi, double CSNuocCu, double CSNuocMoi, double GiaDien, double GiaNuoc, double TienPhong, double TongTien, Date NgayHH, String TrangThaiTT) {
+    public HoaDon(String MaHoaDon, String MaHD, int Thang, int Nam, double CSDienCu, double CSDienMoi, double GiaDien, double CSNuocCu, double CSNuocMoi, double GiaNuoc, double TienPhong, double TongTien, Date NgayHH, String TrangThaiTT) {
         this.MaHoaDon = MaHoaDon;
         this.MaHD = MaHD;
         this.Thang = Thang;
         this.Nam = Nam;
         this.CSDienCu = CSDienCu;
         this.CSDienMoi = CSDienMoi;
+        this.GiaDien = GiaDien;
         this.CSNuocCu = CSNuocCu;
         this.CSNuocMoi = CSNuocMoi;
-        this.GiaDien = GiaDien;
         this.GiaNuoc = GiaNuoc;
         this.TienPhong = TienPhong;
         this.TongTien = TongTien;
@@ -95,6 +96,14 @@ public class HoaDon {
         this.CSDienMoi = CSDienMoi;
     }
 
+    public double getGiaDien() {
+        return GiaDien;
+    }
+
+    public void setGiaDien(double GiaDien) {
+        this.GiaDien = GiaDien;
+    }
+
     public double getCSNuocCu() {
         return CSNuocCu;
     }
@@ -109,14 +118,6 @@ public class HoaDon {
 
     public void setCSNuocMoi(double CSNuocMoi) {
         this.CSNuocMoi = CSNuocMoi;
-    }
-
-    public double getGiaDien() {
-        return GiaDien;
-    }
-
-    public void setGiaDien(double GiaDien) {
-        this.GiaDien = GiaDien;
     }
 
     public double getGiaNuoc() {
@@ -161,8 +162,8 @@ public class HoaDon {
 
     @Override
     public String toString() {
-        return "HoaDon{" + "MaHoaDon=" + MaHoaDon + ", MaHD=" + MaHD + ", Thang=" + Thang + ", Nam=" + Nam + ", CSDienCu=" + CSDienCu + ", CSDienMoi=" + CSDienMoi + ", CSNuocCu=" + CSNuocCu + ", CSNuocMoi=" + CSNuocMoi + ", GiaDien=" + GiaDien + ", GiaNuoc=" + GiaNuoc + ", TienPhong=" + TienPhong + ", TongTien=" + TongTien + ", NgayHH=" + NgayHH + ", TrangThaiTT=" + TrangThaiTT + '}';
+        return "HoaDon{" + "MaHoaDon=" + MaHoaDon + ", MaHD=" + MaHD + ", Thang=" + Thang + ", Nam=" + Nam + ", CSDienCu=" + CSDienCu + ", CSDienMoi=" + CSDienMoi + ", GiaDien=" + GiaDien + ", CSNuocCu=" + CSNuocCu + ", CSNuocMoi=" + CSNuocMoi + ", GiaNuoc=" + GiaNuoc + ", TienPhong=" + TienPhong + ", TongTien=" + TongTien + ", NgayHH=" + NgayHH + ", TrangThaiTT=" + TrangThaiTT + '}';
     }
 
-    
+ 
 }

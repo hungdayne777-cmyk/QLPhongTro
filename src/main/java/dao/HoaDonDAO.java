@@ -20,7 +20,7 @@ import util.DBConnection;
  */
 public class HoaDonDAO {
 
-     public List<HoaDon> findAll() {
+    public List<HoaDon> findAll() {
         List<HoaDon> ds = new ArrayList<>();
         String sql = "SELECT * FROM HOADON";
 
@@ -29,20 +29,40 @@ public class HoaDonDAO {
             while (rs.next()) {
                 String maHoaDon = rs.getString("MaHoaDon");
                 String maHD = rs.getString("MaHD");
+
                 int thang = rs.getInt("Thang");
                 int nam = rs.getInt("Nam");
+
                 double csDienCu = rs.getDouble("CSDienCu");
                 double csDienMoi = rs.getDouble("CSDienMoi");
                 double dgDien = rs.getDouble("DonGiaDien");
+
                 double csNuocCu = rs.getDouble("CSNuocCu");
                 double csNuocMoi = rs.getDouble("CSNuocMoi");
                 double dgNuoc = rs.getDouble("DonGiaNuoc");
-                double tienPhong = rs.getDouble("TienPhong");
 
+                double tienPhong = rs.getDouble("TienPhong");
                 double tongTien = rs.getDouble("TongTien");
+
                 Date ngayHH = rs.getDate("NgayHetHan");
                 String trangThaiTT = rs.getString("TrangThaiThanhToan");
-                ds.add(new HoaDon(maHoaDon, maHD, thang, nam, csDienCu, csDienMoi, dgDien, csNuocCu, csNuocMoi, dgNuoc, tienPhong, tongTien, ngayHH, trangThaiTT));
+
+                ds.add(new HoaDon(
+                        maHoaDon,
+                        maHD,
+                        thang,
+                        nam,
+                        csDienCu,
+                        csDienMoi,
+                        dgDien,
+                        csNuocCu,
+                        csNuocMoi,
+                        dgNuoc,
+                        tienPhong,
+                        tongTien,
+                        ngayHH,
+                        trangThaiTT
+                ));
             }
         } catch (SQLException e) {
             System.out.println("Lỗi khi đọc dữ liệu: " + e.getMessage());
@@ -158,63 +178,90 @@ public class HoaDonDAO {
         }
         return false;
     }
-    
+
     public List<HoaDon> findNoQuaHan() {
-    List<HoaDon> ds = new ArrayList<>();
-    // Sửa TrangThaiTT -> TrangThai (hoặc tên cột thực tế trong bảng HOADON)
-    String sql = "SELECT * FROM HOADON WHERE TrangThaiThanhToan <> N'Đã thanh toán' AND NgayHetHan < GETDATE()";
-    
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-            ds.add(new HoaDon(
-                rs.getString("MaHoaDon"),
-                            rs.getString("MaHD"),
-                            rs.getInt("Thang"),
-                            rs.getInt("Nam"),
-                            rs.getDouble("CSDienCu"),
-                            rs.getDouble("CSDienMoi"),
-                            rs.getDouble("DonGiaDien"),
-                            rs.getDouble("CSNuocCu"),
-                            rs.getDouble("CSNuocMoi"),
-                            rs.getDouble("DonGiaNuoc"),
-                            rs.getDouble("TienPhong"),
-                            rs.getDouble("TongTien"),
-                            rs.getDate("NgayHetHan"),
-                            rs.getString("TrangThaiThanhToan")
-            ));
+        List<HoaDon> ds = new ArrayList<>();
+        // Sửa TrangThaiTT -> TrangThai (hoặc tên cột thực tế trong bảng HOADON)
+        String sql = "SELECT * FROM HOADON WHERE TrangThaiThanhToan <> N'Đã thanh toán' AND NgayHetHan < GETDATE()";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ds.add(new HoaDon(
+                        rs.getString("MaHoaDon"),
+                        rs.getString("MaHD"),
+                        rs.getInt("Thang"),
+                        rs.getInt("Nam"),
+                        rs.getDouble("CSDienCu"),
+                        rs.getDouble("CSDienMoi"),
+                        rs.getDouble("DonGiaDien"),
+                        rs.getDouble("CSNuocCu"),
+                        rs.getDouble("CSNuocMoi"),
+                        rs.getDouble("DonGiaNuoc"),
+                        rs.getDouble("TienPhong"),
+                        rs.getDouble("TongTien"),
+                        rs.getDate("NgayHetHan"),
+                        rs.getString("TrangThaiThanhToan")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi HoaDonDAO.findNoQuaHan: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Lỗi HoaDonDAO.findNoQuaHan: " + e.getMessage());
+        return ds;
     }
-    return ds;
-}
 
     public List<HoaDon> findByName(String name) {
         List<HoaDon> ds = new ArrayList<>();
-        String sql = "SELECT * FROM HOADON WHERE MaHoaDon LIKE ?";
+        String sql = "SELECT hd.*, nt.HoTen \n"
+                + "FROM HoaDon hd\n"
+                + "LEFT JOIN HOPDONG hdt ON hd.MaHD = hdt.MaHD\n"
+                + "LEFT JOIN NGUOITHUE nt ON hdt.MaNT = nt.MaNT\n"
+                + "WHERE hd.MaHoaDon LIKE ? \n"
+                + "   OR hdt.MaPhong LIKE ? \n"
+                + "   OR nt.HoTen LIKE ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, "%" + name + "%");
+            ps.setString(2, "%" + name + "%");
+            ps.setString(3, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String maHoaDon = rs.getString("MaHoaDon");
-                    String maHD = rs.getString("MaHD");
-                    int thang = rs.getInt("Thang");
-                    int nam = rs.getInt("Nam");
-                    double csDienCu = rs.getDouble("CSDienCu");
-                    double csDienMoi = rs.getDouble("CSDienMoi");
-                    double dgDien = rs.getDouble("DonGiaDien");
-                    double csNuocCu = rs.getDouble("CSNuocCu");
-                    double csNuocMoi = rs.getDouble("CSNuocMoi");
-                    double dgNuoc = rs.getDouble("DonGiaNuoc");
-                    double tienPhong = rs.getDouble("TienPhong");
-                    double tongTien = rs.getDouble("TongTien");
-                    Date ngayHH = rs.getDate("NgayHetHan");
-                    String trangThaiTT = rs.getString("TrangThaiThanhToan");
-                    ds.add(new HoaDon(maHoaDon, maHD, thang, nam, csDienCu, csDienMoi, dgDien, csNuocCu, csNuocMoi, dgNuoc, tienPhong, tongTien, ngayHH, trangThaiTT));
+                String maHD = rs.getString("MaHD");
+
+                int thang = rs.getInt("Thang");
+                int nam = rs.getInt("Nam");
+
+                double csDienCu = rs.getDouble("CSDienCu");
+                double csDienMoi = rs.getDouble("CSDienMoi");
+                double dgDien = rs.getDouble("DonGiaDien");
+
+                double csNuocCu = rs.getDouble("CSNuocCu");
+                double csNuocMoi = rs.getDouble("CSNuocMoi");
+                double dgNuoc = rs.getDouble("DonGiaNuoc");
+
+                double tienPhong = rs.getDouble("TienPhong");
+                double tongTien = rs.getDouble("TongTien");
+
+                Date ngayHH = rs.getDate("NgayHetHan");
+                String trangThaiTT = rs.getString("TrangThaiThanhToan");
+
+                ds.add(new HoaDon(
+                        maHoaDon,
+                        maHD,
+                        thang,
+                        nam,
+                        csDienCu,
+                        csDienMoi,
+                        dgDien,
+                        csNuocCu,
+                        csNuocMoi,
+                        dgNuoc,
+                        tienPhong,
+                        tongTien,
+                        ngayHH,
+                        trangThaiTT
+                ));
                 }
             }
         } catch (SQLException e) {
@@ -222,82 +269,80 @@ public class HoaDonDAO {
         }
         return ds;
     }
+
     public double[] getChiSoMoiNhatByMaHD(String maHD) {
-    double[] chiSo = null; 
-    String sql = "SELECT TOP 1 CsDienMoi, CsNuocMoi FROM HoaDon " +
-                 "WHERE MaHD = ? ORDER BY Nam DESC, Thang DESC, MaHoaDon DESC";
-    
-    try (Connection con = DBConnection.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, maHD);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            chiSo = new double[]{
-                rs.getDouble("CsDienMoi"), 
-                rs.getDouble("CsNuocMoi")
-            };
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return chiSo;
-}
+        double[] chiSo = null;
+        String sql = "SELECT TOP 1 CsDienMoi, CsNuocMoi FROM HoaDon "
+                + "WHERE MaHD = ? ORDER BY Nam DESC, Thang DESC, MaHoaDon DESC";
 
-
-public double[] getChiSoBanDauTuHopDong(String maHD) {
-    double[] chiSo = new double[]{0.0, 0.0};
-    String sql = "SELECT DienBanDau, NuocBanDau FROM HopDong WHERE MaHD = ?";
-    
-    try (Connection con = DBConnection.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, maHD);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            chiSo[0] = rs.getDouble("DienBanDau");
-            chiSo[1] = rs.getDouble("NuocBanDau");
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return chiSo;
-}
-public boolean capNhatTrangThaiThanhToan(String maHoaDon, String trangThaiMoi) {
-    String sql = "UPDATE HOADON SET TrangThaiThanhToan = ? WHERE MaHoaDon = ?";
-    
-    try (Connection con = DBConnection.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-        
-        ps.setString(1, trangThaiMoi);
-        ps.setString(2, maHoaDon);
-        
-        return ps.executeUpdate() > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return false;
-}
-
-public Object[] getTenNguoiThueByMaHoaDon(String maHoaDon) {
-    String sql = "SELECT nt.HoTen, hd.TongTien " +
-                 "FROM HOADON hd " +
-                 "JOIN HOPDONG h ON hd.MaHD = h.MaHD " +
-                 "JOIN NGUOITHUE nt ON h.MaNT = nt.MaNT " +
-                 "WHERE hd.MaHoaDon = ?";
-
-    try (Connection conn = DBConnection.getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setString(1, maHoaDon);
-        try (ResultSet rs = ps.executeQuery()) {
+        try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maHD);
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                String tenNguoiThue = rs.getString("HoTen");
-                double tongTien = rs.getDouble("TongTien");
-                return new Object[]{tenNguoiThue, tongTien};
+                chiSo = new double[]{
+                    rs.getDouble("CsDienMoi"),
+                    rs.getDouble("CsNuocMoi")
+                };
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        System.out.println("Lỗi khi lấy thông tin thanh toán: " + e.getMessage());
+        return chiSo;
     }
-    return null;
-}
+
+    public double[] getChiSoBanDauTuHopDong(String maHD) {
+        double[] chiSo = new double[]{0.0, 0.0};
+        String sql = "SELECT CSDienCu, CSNuocCu FROM HOADON WHERE MaHD = ?";
+
+        try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maHD);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                chiSo[0] = rs.getDouble("CSDienCu");
+                chiSo[1] = rs.getDouble("CSNuocCu");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return chiSo;
+    }
+
+    public boolean capNhatTrangThaiThanhToan(String maHoaDon, String trangThaiMoi) {
+        String sql = "UPDATE HOADON SET TrangThaiThanhToan = ? WHERE MaHoaDon = ?";
+
+        try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, trangThaiMoi);
+            ps.setString(2, maHoaDon);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Object[] getTenNguoiThueByMaHoaDon(String maHoaDon) {
+        String sql = "SELECT nt.HoTen, hd.TongTien "
+                + "FROM HOADON hd "
+                + "JOIN HOPDONG h ON hd.MaHD = h.MaHD "
+                + "JOIN NGUOITHUE nt ON h.MaNT = nt.MaNT "
+                + "WHERE hd.MaHoaDon = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maHoaDon);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String tenNguoiThue = rs.getString("HoTen");
+                    double tongTien = rs.getDouble("TongTien");
+                    return new Object[]{tenNguoiThue, tongTien};
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy thông tin thanh toán: " + e.getMessage());
+        }
+        return null;
+    }
+
 }

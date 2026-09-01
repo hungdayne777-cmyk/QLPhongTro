@@ -132,11 +132,12 @@ public class NguoiThueDAO {
 
     public List<NguoiThue> findByName(String name) {
         List<NguoiThue> ds = new ArrayList<>();
-        String sql = "SELECT * FROM NGUOITHUE WHERE MaNT LIKE ?";
+        String sql = "SELECT * FROM NGUOITHUE WHERE MaNT LIKE ? OR HoTen LIKE ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, "%" + name + "%");
+               ps.setString(2, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String maNT = rs.getString("MaNT");
@@ -156,4 +157,35 @@ public class NguoiThueDAO {
         }
         return ds;
     }
+     public boolean deleteByMaPhong(String maPhong) {
+    String sql = "DELETE FROM NGUOITHUE WHERE MaPhong = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, maPhong);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+     public int countNguoiThueByMaPhong(String maPhong) {
+
+    String sql = "SELECT COUNT(*) FROM NGUOITHUE WHERE LTRIM(RTRIM(MaPhong)) = LTRIM(RTRIM(?))";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, maPhong.trim());
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                // In log ra Console để kiểm tra ngay khi bấm nút
+                System.out.println("-> SQL Dem nguoi phong [" + maPhong + "]: " + count);
+                return count;
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi đếm số người: " + e.getMessage());
+    }
+    return 0;
+}
 }

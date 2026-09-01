@@ -127,6 +127,8 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel7.setText("Số điện thoại");
 
+        txtSoDT.addActionListener(this::txtSoDTActionPerformed);
+
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel8.setText("Email");
 
@@ -138,53 +140,50 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
-                        .addGap(555, 555, 555)
-                        .addComponent(txtSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel5))
-                                .addGap(12, 12, 12)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                    .addComponent(txtNguoiThue, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSoCC, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(40, 40, 40)
-                                .addComponent(dtcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(117, 117, 117)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtKeyword)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btTimNguoiThue, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel8))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtEmail)
-                                    .addComponent(CboMaPhong, 0, 222, Short.MAX_VALUE))))))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(txtNguoiThue, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSoCC, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(40, 40, 40)
+                        .addComponent(dtcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(117, 117, 117)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtKeyword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btTimNguoiThue, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtEmail)
+                                .addComponent(CboMaPhong, 0, 222, Short.MAX_VALUE))
+                            .addComponent(txtSoDT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(33, 33, 33))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(txtSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -222,6 +221,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Danh sách người thuê", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), java.awt.Color.blue)); // NOI18N
 
+        tblNguoiThue.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         tblNguoiThue.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -246,14 +246,14 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addGap(0, 9, Short.MAX_VALUE))
         );
 
         btLamMoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -267,7 +267,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         btXoa.addActionListener(this::btXoaActionPerformed);
 
         btSua.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/reload.png"))); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pen.png"))); // NOI18N
         btSua.setText("Sửa");
         btSua.addActionListener(this::btSuaActionPerformed);
 
@@ -281,11 +281,9 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(131, 131, 131)
                         .addComponent(btThem, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
@@ -294,8 +292,8 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
                         .addComponent(btXoa)
                         .addGap(45, 45, 45)
                         .addComponent(btLamMoi))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btLamMoi, btSua, btThem, btXoa});
@@ -303,7 +301,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -311,9 +309,9 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
                     .addComponent(btSua)
                     .addComponent(btXoa)
                     .addComponent(btLamMoi))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btLamMoi, btSua, btThem, btXoa});
@@ -378,71 +376,131 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
     }//GEN-LAST:event_tblNguoiThueMouseClicked
 
     private void btThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemActionPerformed
-        // TODO add your handling code here:
-        String ma = txtNguoiThue.getText().trim();
-        String ten = txtHoTen.getText().trim();
-        String email = txtEmail.getText().trim();
-        String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString() : "";
+      String ma = txtNguoiThue.getText().trim();
+    String ten = txtHoTen.getText().trim();
+    String email = txtEmail.getText().trim();
+    String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
 
-        if (ma.isEmpty() || ten.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã và Họ tên người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
+    if (ma.isEmpty() || ten.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã và Họ tên người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    java.util.Date selectedDate = dtcNgaySinh.getDate();
+    if (selectedDate == null) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+
+    // Lấy CCCD và SĐT dạng String chuẩn xác
+    String cccd = txtSoCC.getText().trim();
+    String sdt = txtSoDT.getText().trim();
+
+    if (!maPhong.isEmpty()) {
+    int soNguoiHienTai = ntDAO.countNguoiThueByMaPhong(maPhong);
+    Phong phong = pDAO.findById(maPhong);
+
+    if (phong == null) {
+        JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu phòng " + maPhong + " trong CSDL!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    System.out.println("DEBUG: Phong " + maPhong + " | Hien tai: " + soNguoiHienTai + " | Toi da: " + phong.getSoNguoiToiDa());
+
+    if (soNguoiHienTai >= phong.getSoNguoiToiDa()) {
+        JOptionPane.showMessageDialog(this, 
+            "Phòng " + maPhong + " đã đạt số người tối đa (" + soNguoiHienTai + "/" + phong.getSoNguoiToiDa() + ")!\nKhông thể thêm người mới.", 
+            "Cảnh báo phòng đã đầy", JOptionPane.WARNING_MESSAGE);
+        return; 
+    }
+    }
+    // ------------------------------------------------------------
+
+    java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
+
+    NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
+    
+    if (ntDAO.insert(nt)) {
+        
+        // --- BỔ SUNG LOGIC: CẬP NHẬT TRẠNG THÁI PHÒNG THÀNH 'ĐÃ THUÊ' ---
+        if (!maPhong.isEmpty()) {
+            pDAO.updateTrangThai(maPhong, "Đã thuê");
         }
+        // ---------------------------------------------------------------
 
-        java.util.Date selectedDate = dtcNgaySinh.getDate();
-        if (selectedDate == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
-
-        // Lấy CCCD và SĐT dạng String chuẩn xác
-        String cccd = txtSoCC.getText().trim();
-        String sdt = txtSoDT.getText().trim();
-
-        java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
-
-        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
-        if (ntDAO.insert(nt)) {
-            JOptionPane.showMessageDialog(this, "Thêm người thuê thành công!");
-            NapDuLieuTableNguoiThue();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(this, "Thêm người thuê thành công!");
+        NapDuLieuTableNguoiThue();
+    } else {
+        JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btThemActionPerformed
 
     private void btSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaActionPerformed
-        // TODO add your handling code here:
         String ma = txtNguoiThue.getText().trim();
-        String ten = txtHoTen.getText().trim();
-        String email = txtEmail.getText().trim();
-        String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString() : "";
+    String ten = txtHoTen.getText().trim();
+    String email = txtEmail.getText().trim();
+    String maPhongMoi = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
 
-        if (ma.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần sửa từ bảng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
+    if (ma.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần sửa từ bảng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    java.util.Date selectedDate = dtcNgaySinh.getDate();
+    if (selectedDate == null) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+
+    String cccd = txtSoCC.getText().trim();
+    String sdt = txtSoDT.getText().trim();
+
+    // 1. LẤY THÔNG TIN CŨ CỦA NGƯỜI THUÊ ĐỂ KIỂM TRA PHÒNG CŨ
+    NguoiThue ntHienTai = ntDAO.findById(ma);
+    if (ntHienTai == null) {
+        JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    String maPhongCu = ntHienTai.getMaPhong();
+
+    // 2. RÀNG BUỘC SĨ SỐ: CHỈ KIỂM TRA KHI ĐỔI SANG PHÒNG KHÁC
+    if (!maPhongMoi.isEmpty() && !maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+        int soNguoiHienTaiPhongMoi = ntDAO.countNguoiThueByMaPhong(maPhongMoi);
+        Phong phongMoi = pDAO.findById(maPhongMoi);
+
+        if (phongMoi != null && soNguoiHienTaiPhongMoi >= phongMoi.getSoNguoiToiDa()) {
+            JOptionPane.showMessageDialog(this, 
+                "Phòng " + maPhongMoi + " đã đạt số người tối đa (" + soNguoiHienTaiPhongMoi + "/" + phongMoi.getSoNguoiToiDa() + ")!\nKhông thể chuyển người thuê sang phòng này.", 
+                "Cảnh báo phòng đầy", JOptionPane.WARNING_MESSAGE);
+            return; // Chặn không cho sửa
+        }
+    }
+
+    // Giữ nguyên ngày vào ở cũ để không làm đứt gãy lịch sử
+    java.sql.Date ngayVaoO = new java.sql.Date(ntHienTai.getNgayVaoO().getTime());
+
+    NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhongMoi);
+    
+    if (ntDAO.update(nt)) {
+        // 3. CẬP NHẬT TRẠNG THÁI PHÒNG KHI CÓ CHUYỂN PHÒNG
+        if (!maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+            // Nếu phòng cũ không còn ai ở thì đổi thành 'Trống'
+            if (!maPhongCu.isEmpty() && ntDAO.countNguoiThueByMaPhong(maPhongCu) == 0) {
+                pDAO.updateTrangThai(maPhongCu, "Trống");
+            }
+            // Phòng mới chắc chắn chuyển thành 'Đã thuê'
+            if (!maPhongMoi.isEmpty()) {
+                pDAO.updateTrangThai(maPhongMoi, "Đã thuê");
+            }
         }
 
-        java.util.Date selectedDate = dtcNgaySinh.getDate();
-        if (selectedDate == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
-
-        // Lấy CCCD và SĐT dạng String chuẩn xác
-        String cccd = txtSoCC.getText().trim();
-        String sdt = txtSoDT.getText().trim();
-
-        java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
-
-        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
-        if (ntDAO.update(nt)) {
-            JOptionPane.showMessageDialog(this, "Cập nhật thông tin thành công!");
-            NapDuLieuTableNguoiThue();
-        } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(this, "Cập nhật thông tin thành công!");
+        NapDuLieuTableNguoiThue();
+    } else {
+        JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btSuaActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
@@ -485,6 +543,12 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         txtNguoiThue.requestFocus();
     }//GEN-LAST:event_btLamMoiActionPerformed
 
+    private void txtSoDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoDTActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSoDTActionPerformed
+public javax.swing.JTable getTblNguoiThue() {
+    return tblNguoiThue; 
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboMaPhong;
