@@ -144,8 +144,6 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Trạng Thái");
 
-        txtMaPhong.setEditable(false);
-
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText("Giá Phòng");
 
@@ -156,6 +154,7 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
         CboTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Trống", "Đã thuê" }));
 
         SpnSLNguoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        SpnSLNguoi.setModel(new javax.swing.SpinnerNumberModel(1, 0, 4, 1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Số người tối đa");

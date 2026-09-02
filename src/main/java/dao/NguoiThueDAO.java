@@ -188,4 +188,27 @@ public class NguoiThueDAO {
     }
     return 0;
 }
+     public boolean clearMaPhong(String maNguoiThue) {
+    String sql = "UPDATE NGUOITHUE SET MaPhong = NULL WHERE MaNguoiThue = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pst = conn.prepareStatement(sql)) {
+        pst.setString(1, maNguoiThue);
+        return pst.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+     public boolean updateMaPhong(String maNguoiThue, String maPhong) {
+        String sql = "UPDATE NGUOITHUE SET MaPhong = ? WHERE MaNT = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maPhong);
+            pst.setString(2, maNguoiThue);
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Lỗi cập nhật mã phòng cho người thuê: " + e.getMessage());
+            return false;
+        }
+    }
 }

@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>edu.cntt.lab03.qlphongtro.QLPhongTro</exec.mainClass>
     </properties>
     <dependencies>
@@ -53,34 +53,38 @@
         <version>6.21.0</version>
     </dependency>
       </dependencies>
-      <build>
-    <plugins>
-        <!-- Plugin đóng gói tất cả phụ thuộc thành 1 file JAR duy nhất -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.6.0</version>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <!-- ĐƯỜNG DẪN TỚI MÀN HÌNH CHẠY ĐẦU TIÊN (MAIN CLASS) -->
-                        <mainClass>view.LoginFrame</mainClass>
-                    </manifest>
-                </archive>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
+     <build>
+        <!-- Đặt tên file xuất ra thành QLPT.jar -->
+        <finalName>QLPT</finalName>
+        
+        <plugins>
+            <!-- Plugin đóng gói Fat JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <!-- Bỏ đuôi -jar-with-dependencies -->
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <mainClass>view.LoginFrame</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

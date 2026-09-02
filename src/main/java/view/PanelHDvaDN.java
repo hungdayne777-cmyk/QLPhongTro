@@ -555,26 +555,36 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }//GEN-LAST:event_tblHoaDonMouseClicked
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
-        if (CboHopDong.getItemCount() > 0) {
-            CboHopDong.setSelectedIndex(-1);
-        }
-        if (cboTrangThaiTT.getItemCount() > 0) {
-            cboTrangThaiTT.setSelectedIndex(-1);
-        }
-        txtMaHoaDon.setText("");
-        txtdgdien.setText("");
-        txtdgnuoc.setText("");
-        txtdienmoi.setText("");
-        txtnuocmoi.setText("");
-        txtTienPhong.setText("");
-        txtTongTien.setText("");
-        txtdiencu.setText("");
-        txtnuoccu.setText("");
-        SpnThang.setValue(1);
-        SpnNam.setValue(2026);
-        dtcNgayHH.setDate(null);
-        tblHoaDon.clearSelection();
+        Khoi_Tao_ComboBoxHD();   
+    Khoi_Tao_Table(); 
+    // 2. Reset lựa chọn ComboBox về trạng thái chưa chọn
+    if (CboHopDong.getItemCount() > 0) {
+        CboHopDong.setSelectedIndex(-1);
+    }
+    if (cboTrangThaiTT.getItemCount() > 0) {
+        cboTrangThaiTT.setSelectedIndex(-1);
+    }
 
+    // 3. Xoá trắng các ô nhập liệu
+    txtMaHoaDon.setText("");
+    txtdgdien.setText("");
+    txtdgnuoc.setText("");
+    txtdienmoi.setText("");
+    txtnuocmoi.setText("");
+    txtTienPhong.setText("");
+    txtTongTien.setText("");
+    txtdiencu.setText("");
+    txtnuoccu.setText("");
+
+    // 4. Đặt lại giá trị mặc định cho Tháng, Năm và Ngày
+    SpnThang.setValue(java.time.LocalDate.now().getMonthValue()); // Lấy tháng hiện tại
+    SpnNam.setValue(java.time.LocalDate.now().getYear());         // Lấy năm hiện tại
+    dtcNgayHH.setDate(null);
+
+    // 5. Bỏ chọn trên bảng và mở khóa Mã hóa đơn (nếu có)
+    tblHoaDon.clearSelection();
+    txtMaHoaDon.setEnabled(true);
+    txtMaHoaDon.requestFocus();
 
     }//GEN-LAST:event_btLamMoiActionPerformed
 

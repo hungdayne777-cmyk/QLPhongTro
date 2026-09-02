@@ -281,4 +281,59 @@ public class HopDongDAO {
     }
     return false;
 }
+    public boolean thanhLyHopDong(String maHD, String maPhong, String maNguoiThue) {
+        String sqlUpdateHopDong = "UPDATE HOPDONG SET TrangThai = N'Đã thanh lý' WHERE MaHD = ?";
+        String sqlUpdatePhong = "UPDATE PHONG SET TrangThai = N'Trống' WHERE MaPhong = ?";
+        String sqlUpdateNguoiThue = "UPDATE NGUOITHUE SET MaPhong = NULL WHERE MaNT = ?";
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            // Tắt Auto Commit để thực thi chuỗi lệnh dạng Transaction
+            conn.setAutoCommit(false);
+
+            // 1. Cập nhật trạng thái Hợp đồng
+            try (PreparedStatement pst1 = conn.prepareStatement(sqlUpdateHopDong)) {
+                pst1.setString(1, maHD);
+                pst1.executeUpdate();
+            }
+
+            // 2. Cập nhật trạng thái Phòng về 'Trống'
+            try (PreparedStatement pst2 = conn.prepareStatement(sqlUpdatePhong)) {
+                pst2.setString(1, maPhong);
+                pst2.executeUpdate();
+            }
+
+            // 3. Xóa mã phòng gắn với Người thuê để có thể ký hợp đồng mới sau này
+            try (PreparedStatement pst3 = conn.prepareStatement(sqlUpdateNguoiThue)) {
+                pst3.setString(1, maNguoiThue);
+                pst3.executeUpdate();
+            }
+
+            // Xác nhận thành công toàn bộ
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    // Hoàn tác nếu có lỗi xảy ra ở bất kỳ bước nào
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

@@ -21,11 +21,13 @@ import model.Phong;
  * @author MSI
  */
 public class PanelHopDongUI extends javax.swing.JPanel {
-private HopDongDAO hdDAO = new HopDongDAO();
-private PhongDAO pDAO = new PhongDAO();
-private NguoiThueDAO ntDAO = new NguoiThueDAO();
+
+    private HopDongDAO hdDAO = new HopDongDAO();
+    private PhongDAO pDAO = new PhongDAO();
+    private NguoiThueDAO ntDAO = new NguoiThueDAO();
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     DecimalFormat formatter = new java.text.DecimalFormat("#,###");
+
     /**
      * Creates new form PanelHopDongUI
      */
@@ -36,20 +38,18 @@ private NguoiThueDAO ntDAO = new NguoiThueDAO();
     }
 
     public void napDuLieuTableHopDong() {
-    DefaultTableModel model = (DefaultTableModel) tblHopDong.getModel();
-    
-    String[] headers = {"Mã HĐ", "Mã Phòng", "Mã Người Thuê", "Giá Thuê", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Trạng Thái"};
-    model.setColumnIdentifiers(headers);
-    model.setRowCount(0);
-    
-    java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,###");
-    
-    List<HopDong> list = hdDAO.findAll();
-    for (HopDong hd : list) {
-         String giaThueFormatted = formatter.format(hd.getGiaThue()).replace(",", ".") + " VNĐ";
-       
-          
-            
+        DefaultTableModel model = (DefaultTableModel) tblHopDong.getModel();
+
+        String[] headers = {"Mã HĐ", "Mã Phòng", "Mã Người Thuê", "Giá Thuê", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Trạng Thái"};
+        model.setColumnIdentifiers(headers);
+        model.setRowCount(0);
+
+        java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,###");
+
+        List<HopDong> list = hdDAO.findAll();
+        for (HopDong hd : list) {
+            String giaThueFormatted = formatter.format(hd.getGiaThue()).replace(",", ".") + " VNĐ";
+
             model.addRow(new Object[]{
                 hd.getMaHD(),
                 hd.getMaPhong(),
@@ -59,43 +59,50 @@ private NguoiThueDAO ntDAO = new NguoiThueDAO();
                 hd.getNgayKT() != null ? sdf.format(hd.getNgayKT()) : "",
                 hd.getTrangThai()
             });
-        
+
+        }
     }
-}
-    
+
     public void NapComboBox() {
-    // 1. Load danh sách Phòng vào cboChonPhong
-    cboChonPhong.removeAllItems();
-    PhongDAO phongDAO = new PhongDAO(); // Hoặc DAO quản lý phòng của ông
-    for (Phong p : phongDAO.findAll()) {
-        cboChonPhong.addItem(p.getMaPhong()); // Hoặc tên phòng tùy ý
+        // 1. Load danh sách Phòng vào cboChonPhong
+        cboChonPhong.removeAllItems();
+        PhongDAO phongDAO = new PhongDAO(); // Hoặc DAO quản lý phòng của ông
+        for (Phong p : phongDAO.findAll()) {
+            cboChonPhong.addItem(p.getMaPhong()); // Hoặc tên phòng tùy ý
+        }
+
+        // 2. Load danh sách Người Thuê vào CboNguoiThue
+        CboNguoiThue.removeAllItems();
+        NguoiThueDAO ntDAO = new NguoiThueDAO();
+        for (NguoiThue nt : ntDAO.findAll()) {
+            CboNguoiThue.addItem(nt.getMaNT()); // Hoặc tên người thuê
+        }
+
+        // 3. Riêng ComboBox Trạng Thái, nếu nó cố định thì add trực tiếp vào:
+        cboTrangThaiPhongHD.removeAllItems();
+        cboTrangThaiPhongHD.addItem("Đang hiệu lực");
+        cboTrangThaiPhongHD.addItem("Đã thanh lý");
+        cboTrangThaiPhongHD.addItem("Hết hạn");
     }
 
-    // 2. Load danh sách Người Thuê vào CboNguoiThue
-    CboNguoiThue.removeAllItems();
-    NguoiThueDAO ntDAO = new NguoiThueDAO();
-    for (NguoiThue nt : ntDAO.findAll()) {
-        CboNguoiThue.addItem(nt.getMaNT()); // Hoặc tên người thuê
-    }
-
-    // 3. Riêng ComboBox Trạng Thái, nếu nó cố định thì add trực tiếp vào:
-    cboTrangThaiPhongHD.removeAllItems();
-    cboTrangThaiPhongHD.addItem("Đang hiệu lực");
-    cboTrangThaiPhongHD.addItem("Đã thanh lý");
-    cboTrangThaiPhongHD.addItem("Hết hạn");
-}
-    
     public void LoadDuLieu() {
-    txtHopDong.setText("");
-    txtHopDong.setEnabled(true); // Mở lại khóa để nhập mã mới
-    txtGiaThue.setText("");
-    if (cboChonPhong.getItemCount() > 0) cboChonPhong.setSelectedIndex(0);
-    if (CboNguoiThue.getItemCount() > 0) CboNguoiThue.setSelectedIndex(0);
-    if (cboTrangThaiPhongHD.getItemCount() > 0) cboTrangThaiPhongHD.setSelectedIndex(0);
-    dtcNgayBD.setDate(null);
-    dtcNgayKT.setDate(null);
-    tblHopDong.clearSelection(); // Bỏ chọn dòng trên bảng
-}
+        txtHopDong.setText("");
+        txtHopDong.setEnabled(true); // Mở lại khóa để nhập mã mới
+        txtGiaThue.setText("");
+        if (cboChonPhong.getItemCount() > 0) {
+            cboChonPhong.setSelectedIndex(0);
+        }
+        if (CboNguoiThue.getItemCount() > 0) {
+            CboNguoiThue.setSelectedIndex(0);
+        }
+        if (cboTrangThaiPhongHD.getItemCount() > 0) {
+            cboTrangThaiPhongHD.setSelectedIndex(0);
+        }
+        dtcNgayBD.setDate(null);
+        dtcNgayKT.setDate(null);
+        tblHopDong.clearSelection(); // Bỏ chọn dòng trên bảng
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -370,7 +377,7 @@ private NguoiThueDAO ntDAO = new NguoiThueDAO();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btInHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInHDActionPerformed
-       
+
         String maHopDong = txtHopDong.getText().trim();
 
         if (maHopDong.isEmpty()) {
@@ -387,229 +394,243 @@ private NguoiThueDAO ntDAO = new NguoiThueDAO();
     private void tblHopDongMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHopDongMouseClicked
         // TODO add your handling code here:
         int row = tblHopDong.getSelectedRow();
-    if (row >= 0) {
-        // Lấy mã hợp đồng từ dòng được chọn ở cột 0
-        String maHD = tblHopDong.getValueAt(row, 0).toString();
-        
-        // Gọi hàm findById để lấy thông tin chi tiết từ DAO
-        HopDong hd = hdDAO.findById(maHD);
-        if (hd != null) {
-            txtHopDong.setText(hd.getMaHD());
-            
-            // Format giá thuê lên txtGiaThue dạng số nguyên gọn gàng (không bị .0)
-            txtGiaThue.setText(String.format("%.0f", hd.getGiaThue()));
-            
-            // Set giá trị cho các ComboBox
-            cboChonPhong.setSelectedItem(hd.getMaPhong());
-            CboNguoiThue.setSelectedItem(hd.getMaNT());
-            cboTrangThaiPhongHD.setSelectedItem(hd.getTrangThai());
-            
-            // Set ngày tháng cho DateChooser
-            dtcNgayBD.setDate(hd.getNgayBD());
-            dtcNgayKT.setDate(hd.getNgayKT());
-            
-            // Khóa mã hợp đồng lại khi đang xem/sửa
-            txtHopDong.setEnabled(false);
+        if (row >= 0) {
+            // Lấy mã hợp đồng từ dòng được chọn ở cột 0
+            String maHD = tblHopDong.getValueAt(row, 0).toString();
+
+            // Gọi hàm findById để lấy thông tin chi tiết từ DAO
+            HopDong hd = hdDAO.findById(maHD);
+            if (hd != null) {
+                txtHopDong.setText(hd.getMaHD());
+
+                // Format giá thuê lên txtGiaThue dạng số nguyên gọn gàng (không bị .0)
+                txtGiaThue.setText(String.format("%.0f", hd.getGiaThue()));
+
+                // Set giá trị cho các ComboBox
+                cboChonPhong.setSelectedItem(hd.getMaPhong());
+                CboNguoiThue.setSelectedItem(hd.getMaNT());
+                cboTrangThaiPhongHD.setSelectedItem(hd.getTrangThai());
+
+                // Set ngày tháng cho DateChooser
+                dtcNgayBD.setDate(hd.getNgayBD());
+                dtcNgayKT.setDate(hd.getNgayKT());
+
+                // Khóa mã hợp đồng lại khi đang xem/sửa
+                txtHopDong.setEnabled(false);
+            }
         }
-    }
     }//GEN-LAST:event_tblHopDongMouseClicked
 
     private void btThemHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemHDActionPerformed
-        // TODO add your handling code here:
-       if (!txtHopDong.isEnabled()) {
-        txtHopDong.setText("");
-        txtHopDong.setEnabled(true); // Mở khóa
-        txtGiaThue.setText("");
-        if (cboChonPhong.getItemCount() > 0) cboChonPhong.setSelectedIndex(0);
-        if (CboNguoiThue.getItemCount() > 0) CboNguoiThue.setSelectedIndex(0);
-        if (cboTrangThaiPhongHD.getItemCount() > 0) cboTrangThaiPhongHD.setSelectedIndex(0);
-        dtcNgayBD.setDate(null);
-        dtcNgayKT.setDate(null);
-        tblHopDong.clearSelection();
-        
-        txtHopDong.requestFocus(); // Focus thẳng vào ô Mã HĐ
-        return; // Dừng lại không chạy lệnh insert nữa
-    }
-    
-    // --- NẾU Ô MÃ ĐANG MỞ (ĐANG NHẬP MỚI THẬT SỰ) THÌ TIẾN HÀNH INSERT ---
-    try {
-        String maHD = txtHopDong.getText().trim();
-        String maPhong = cboChonPhong.getSelectedItem().toString();
-        String maNT = CboNguoiThue.getSelectedItem().toString();
-        double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
-        
-        java.util.Date ngayBD = dtcNgayBD.getDate();
-        java.util.Date ngayKT = dtcNgayKT.getDate();
-        String trangThai = cboTrangThaiPhongHD.getSelectedItem().toString();
-        
-        if (maHD.isEmpty()) {
-           JOptionPane.showMessageDialog(null, "Mã hợp đồng không được để trống!");
-            txtHopDong.requestFocus();
-            return;
-        }
-        String maPhongSelect = cboChonPhong.getSelectedItem().toString().trim();
-String maNTSelect = CboNguoiThue.getSelectedItem().toString().trim();
-
-// 1. KIỂM TRA PHÒNG ĐÃ CÓ HỢP ĐỒNG ĐANG HIỆU LỰC CHƯA
-if (hdDAO.hasActiveContract(maPhongSelect)) {
-    JOptionPane.showMessageDialog(this, 
-        "Phòng " + maPhongSelect + " đang có hợp đồng hiệu lực! Vui lòng thanh lý hợp đồng cũ trước.", 
-        "Lỗi tạo hợp đồng", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
-// 2. KIỂM TRA NGƯỜI ĐẠI DIỆN CÓ ĐÚNG LÀ ĐANG Ở PHÒNG ĐÓ KHÔNG
-NguoiThue nt = ntDAO.findById(maNTSelect);
-if (nt != null && !maPhongSelect.equalsIgnoreCase(nt.getMaPhong())) {
-    JOptionPane.showMessageDialog(this, 
-        "Người thuê " + nt.getHoTen() + " (" + maNTSelect + ") hiện đang đăng ký ở phòng " + nt.getMaPhong() + "!\nKhông thể đại diện ký hợp đồng cho phòng " + maPhongSelect + ".", 
-        "Lỗi không khớp phòng", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-        HopDong hd = new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai);
-        
-        if (hdDAO.insert(hd)) {
-            JOptionPane.showMessageDialog(null, "Tạo hợp đồng thành công!");
-            napDuLieuTableHopDong();
-            
-            // Thêm thành công thì clear sạch và focus về ô mã hợp đồng luôn
+        if (!txtHopDong.isEnabled()) {
             txtHopDong.setText("");
+            txtHopDong.setEnabled(true); // Mở khóa
             txtGiaThue.setText("");
+            if (cboChonPhong.getItemCount() > 0) {
+                cboChonPhong.setSelectedIndex(0);
+            }
+            if (CboNguoiThue.getItemCount() > 0) {
+                CboNguoiThue.setSelectedIndex(0);
+            }
+            if (cboTrangThaiPhongHD.getItemCount() > 0) {
+                cboTrangThaiPhongHD.setSelectedIndex(0);
+            }
             dtcNgayBD.setDate(null);
             dtcNgayKT.setDate(null);
-            txtHopDong.requestFocus(); // <--- Focus vào đây
-        } else {
-            JOptionPane.showMessageDialog(null, "Tạo hợp đồng thất bại (Trùng mã hoặc lỗi CSDL)!");
-            txtHopDong.requestFocus();
+            tblHopDong.clearSelection();
+
+            txtHopDong.requestFocus(); // Focus vào ô Mã HĐ
+            return;
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(null, "Giá thuê phải là định dạng số!");
-        txtGiaThue.requestFocus();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Lỗi: " + e.getMessage());
-    }
+
+        // --- NẾU Ô MÃ ĐANG MỞ THÌ TIẾN HÀNH INSERT ---
+        try {
+            String maHD = txtHopDong.getText().trim();
+            String maPhongSelect = cboChonPhong.getSelectedItem().toString().trim();
+            String maNTSelect = CboNguoiThue.getSelectedItem().toString().trim();
+
+            if (maHD.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Mã hợp đồng không được để trống!");
+                txtHopDong.requestFocus();
+                return;
+            }
+
+            if (txtGiaThue.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Giá thuê không được để trống!");
+                txtGiaThue.requestFocus();
+                return;
+            }
+            double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
+
+            java.util.Date ngayBD = dtcNgayBD.getDate();
+            java.util.Date ngayKT = dtcNgayKT.getDate();
+            String trangThai = cboTrangThaiPhongHD.getSelectedItem().toString();
+
+            // 1. KIỂM TRA PHÒNG ĐÃ CÓ HỢP ĐỒNG ĐANG HIỆU LỰC CHƯA
+            if (hdDAO.hasActiveContract(maPhongSelect)) {
+                JOptionPane.showMessageDialog(this,
+                        "Phòng " + maPhongSelect + " đang có hợp đồng hiệu lực! Vui lòng thanh lý hợp đồng cũ trước.",
+                        "Lỗi tạo hợp đồng", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            NguoiThue nt = ntDAO.findById(maNTSelect);
+            if (nt != null && nt.getMaPhong() != null && !nt.getMaPhong().trim().isEmpty()) {
+               
+                if (!nt.getMaPhong().trim().equalsIgnoreCase(maPhongSelect)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Người thuê " + nt.getHoTen() + " (" + maNTSelect + ") hiện đang ở phòng " + nt.getMaPhong()
+                            + "!\nKhông thể tạo hợp đồng cho phòng " + maPhongSelect + ".",
+                            "Lỗi không khớp phòng", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            HopDong hd = new HopDong(maHD, maNTSelect, maPhongSelect, ngayBD, ngayKT, giaThue, trangThai);
+
+            if (hdDAO.insert(hd)) {
+                // --- BỔ SUNG CẬP NHẬT DATABASE KHI THÊM THÀNH CÔNG ---
+                pDAO.updateTrangThai(maPhongSelect, "Đã thuê"); // Đổi trạng thái phòng
+                ntDAO.updateMaPhong(maNTSelect, maPhongSelect); // Gán mã phòng cho người thuê
+
+                JOptionPane.showMessageDialog(null, "Tạo hợp đồng thành công!");
+                napDuLieuTableHopDong();
+
+                // Clear dữ liệu Form
+                txtHopDong.setText("");
+                txtGiaThue.setText("");
+                dtcNgayBD.setDate(null);
+                dtcNgayKT.setDate(null);
+                txtHopDong.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(null, "Tạo hợp đồng thất bại (Trùng mã hoặc lỗi CSDL)!");
+                txtHopDong.requestFocus();
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Giá thuê phải là định dạng số!");
+            txtGiaThue.requestFocus();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + e.getMessage());
+        }
     }//GEN-LAST:event_btThemHDActionPerformed
 
     private void btnGiaHanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGiaHanActionPerformed
-       int row = tblHopDong.getSelectedRow();
-    if (row < 0) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần gia hạn trong bảng!");
-        return;
-    }
-
-    try {
-        // 1. Lấy Mã HD trực tiếp từ dòng được chọn trong Table để tránh lấy sai dữ liệu từ Form
-        String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
-        HopDong hdHienTai = hdDAO.findById(maHD);
-
-        if (hdHienTai == null) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin hợp đồng!");
+        int row = tblHopDong.getSelectedRow();
+        if (row < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần gia hạn trong bảng!");
             return;
         }
 
-        // 2. Kiểm tra nếu hợp đồng đã thanh lý thì KHÔNG cho gia hạn
-        if ("Đã thanh lý".equalsIgnoreCase(hdHienTai.getTrangThai())) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Hợp đồng này ĐÃ THANH LÝ, không thể gia hạn!\nVui lòng tạo hợp đồng mới nếu khách thuê lại.", 
-                "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return;
+        try {
+            String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
+            HopDong hdHienTai = hdDAO.findById(maHD);
+
+            if (hdHienTai == null) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin hợp đồng!");
+                return;
+            }
+
+            if ("Đã thanh lý".equalsIgnoreCase(hdHienTai.getTrangThai())) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Hợp đồng này ĐÃ THANH LÝ, không thể gia hạn!\nVui lòng tạo hợp đồng mới nếu khách thuê lại.",
+                        "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String maPhong = cboChonPhong.getSelectedItem().toString();
+            String maNT = CboNguoiThue.getSelectedItem().toString();
+            double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
+
+            java.util.Date ngayBD = dtcNgayBD.getDate();
+            java.util.Date ngayKT = dtcNgayKT.getDate();
+
+            if (ngayKT != null && ngayBD != null && ngayKT.before(ngayBD)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Ngày kết thúc mới phải sau ngày bắt đầu!");
+                return;
+            }
+
+            String trangThai = "Đang hiệu lực";
+
+            HopDong hd = new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai);
+
+            if (hdDAO.update(hd)) {
+                // Đảm bảo cập nhật đồng bộ CSDL
+                pDAO.updateTrangThai(maPhong, "Đã thuê");
+                ntDAO.updateMaPhong(maNT, maPhong);
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn hợp đồng thành công!");
+
+                napDuLieuTableHopDong();
+                txtHopDong.setEnabled(true);
+
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn thất bại!");
+            }
+
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Giá thuê phải là số hợp lệ!");
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi gia hạn: " + e.getMessage());
         }
-
-        // 3. Lấy thông tin từ các Input trên Form
-        String maPhong = cboChonPhong.getSelectedItem().toString();
-        String maNT = CboNguoiThue.getSelectedItem().toString();
-        double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
-
-        java.util.Date ngayBD = dtcNgayBD.getDate();
-        java.util.Date ngayKT = dtcNgayKT.getDate(); // Ngày kết thúc mới đã chọn trên JDateChooser
-
-        // Kiểm tra logic ngày: Ngày kết thúc mới phải sau ngày bắt đầu
-        if (ngayKT != null && ngayBD != null && ngayKT.before(ngayBD)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Ngày kết thúc mới phải sau ngày bắt đầu!");
-            return;
-        }
-
-        String trangThai = "Đang hiệu lực"; // Trạng thái sau gia hạn
-
-        // 4. Khởi tạo đối tượng HopDong mới để update
-        HopDong hd = new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai);
-
-        if (hdDAO.update(hd)) {
-            // Đảm bảo phòng luôn giữ trạng thái 'Đã thuê'
-            pDAO.updateTrangThai(maPhong, "Đã thuê");
-
-            javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn hợp đồng thành công!");
-
-            // Tải lại bảng & mở khóa mã hợp đồng
-            napDuLieuTableHopDong();
-            txtHopDong.setEnabled(true); 
-
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn thất bại!");
-        }
-
-    } catch (NumberFormatException e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Giá thuê phải là số hợp lệ!");
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi gia hạn: " + e.getMessage());
-    }
     }//GEN-LAST:event_btnGiaHanActionPerformed
 
     private void btThanhLyHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThanhLyHDActionPerformed
-     int row = tblHopDong.getSelectedRow();
-    if (row < 0) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần thanh lý trong bảng!");
-        return;
-    }
-
-    int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc chắn muốn thanh lý hợp đồng này không?", 
-            "Xác nhận thanh lý", 
-            javax.swing.JOptionPane.YES_NO_OPTION);
-
-    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-        try {
-            // 1. Lấy mã hợp đồng từ bảng
-            String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
-            HopDong hd = hdDAO.findById(maHD);
-
-            if (hd != null) {
-                // Lấy mã phòng từ hợp đồng hiện tại
-                String maPhong = hd.getMaPhong(); 
-
-                // 2. Cập nhật model Hợp Đồng trong Java
-                hd.setTrangThai("Đã thanh lý");
-
-                // 3. Thực hiện lưu thay đổi vào CSDL
-                if (hdDAO.update(hd)) {
-
-                    // --- BỔ SUNG: TRẢ PHÒNG VỀ TRẠNG THÁI TRỐNG ---
-                    if (maPhong != null && !maPhong.isEmpty()) {
-                        // Cập nhật trạng thái phòng thành 'Trống'
-                        pDAO.updateTrangThai(maPhong, "Trống"); 
-                        
-                        // Xóa người thuê thuộc phòng này ra khỏi danh sách
-                        ntDAO.deleteByMaPhong(maPhong); 
-                    }
-
-                    // 4. Cập nhật giao diện Swing
-                    cboTrangThaiPhongHD.setSelectedItem("Đã thanh lý");
-                    txtHopDong.setText(hd.getMaHD());
-
-                    JOptionPane.showMessageDialog(this, "Thanh lý hợp đồng thành công! Phòng đã được trả về trạng thái Trống.");
-                    
-                   
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Thanh lý thất bại!");
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy hợp đồng!");
-            }
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi thanh lý: " + e.getMessage());
+        int row = tblHopDong.getSelectedRow();
+        if (row < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần thanh lý trong bảng!");
+            return;
         }
-    }
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn thanh lý hợp đồng này không?",
+                "Xác nhận thanh lý",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                // 1. Lấy mã hợp đồng từ bảng
+                String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
+                HopDong hd = hdDAO.findById(maHD);
+
+                if (hd != null) {
+                    String maPhong = hd.getMaPhong();
+                    String maNguoiThue = hd.getMaNT(); // Lấy thêm MaNguoiThue từ hợp đồng
+
+                    // 2. Cập nhật model Hợp Đồng
+                    hd.setTrangThai("Đã thanh lý");
+
+                    // 3. Lưu thay đổi hợp đồng vào CSDL
+                    if (hdDAO.update(hd)) {
+
+                        // --- BỔ SUNG & SỬA LỖI TRẢ PHÒNG ---
+                        if (maPhong != null && !maPhong.isEmpty()) {
+                            // Cập nhật trạng thái phòng thành 'Trống'
+                            pDAO.updateTrangThai(maPhong, "Trống");
+                        }
+
+                        if (maNguoiThue != null && !maNguoiThue.isEmpty()) {
+
+                            ntDAO.clearMaPhong(maNguoiThue);
+                        }
+
+                        // 4. Cập nhật giao diện Swing & reload lại bảng
+                        cboTrangThaiPhongHD.setSelectedItem("Đã thanh lý");
+                        txtHopDong.setText(hd.getMaHD());
+
+                        napDuLieuTableHopDong();
+
+                        JOptionPane.showMessageDialog(this, "Thanh lý hợp đồng thành công! Phòng đã được trả về trạng thái Trống.");
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Thanh lý thất bại!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy hợp đồng!");
+                }
+            } catch (Exception e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi thanh lý: " + e.getMessage());
+            }
+        }
+
     }//GEN-LAST:event_btThanhLyHDActionPerformed
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
@@ -649,16 +670,16 @@ if (nt != null && !maPhongSelect.equalsIgnoreCase(nt.getMaPhong())) {
     }//GEN-LAST:event_cboTrangThaiPhongHDActionPerformed
 
     private void btTimHopDongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimHopDongActionPerformed
-         String keyword = txtKeyword.getText().trim();
+        String keyword = txtKeyword.getText().trim();
         DefaultTableModel model = (DefaultTableModel) tblHopDong.getModel();
         model.setRowCount(0);
 
         List<HopDong> list = hdDAO.findByName(keyword);
         for (HopDong hd : list) {
-            String ngayBDStr = hd.getNgayBD()!= null ? sdf.format(hd.getNgayBD()) : "";
+            String ngayBDStr = hd.getNgayBD() != null ? sdf.format(hd.getNgayBD()) : "";
             String ngayKTStr = hd.getNgayKT() != null ? sdf.format(hd.getNgayKT()) : "";
-  String giaThueFormatted = formatter.format(hd.getGiaThue()).replace(",", ".") + " VNĐ";
-             model.addRow(new Object[]{
+            String giaThueFormatted = formatter.format(hd.getGiaThue()).replace(",", ".") + " VNĐ";
+            model.addRow(new Object[]{
                 hd.getMaHD(),
                 hd.getMaPhong(),
                 hd.getMaNT(),
@@ -678,40 +699,41 @@ if (nt != null && !maPhongSelect.equalsIgnoreCase(nt.getMaPhong())) {
     private void CboNguoiThueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CboNguoiThueActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_CboNguoiThueActionPerformed
-private void tinhVahienThiGiaThue() {
-    if (cboChonPhong.getSelectedItem() == null) {
-        txtGiaThue.setText("0");
-        return;
-    }
+    private void tinhVahienThiGiaThue() {
+        if (cboChonPhong.getSelectedItem() == null) {
+            txtGiaThue.setText("0");
+            return;
+        }
 
-    String rawMaPhong = cboChonPhong.getSelectedItem().toString().trim();
-    String maPhong = rawMaPhong.split("-")[0].trim();
+        String rawMaPhong = cboChonPhong.getSelectedItem().toString().trim();
+        String maPhong = rawMaPhong.split("-")[0].trim();
 
-    if (!maPhong.isEmpty()) {
-        Phong phong = pDAO.findById(maPhong);
-        if (phong != null) {
-            double giaPhong = phong.getGiaPhong(); 
-            String loaiGia = phong.getLoaiGia();   
+        if (!maPhong.isEmpty()) {
+            Phong phong = pDAO.findById(maPhong);
+            if (phong != null) {
+                double giaPhong = phong.getGiaPhong();
+                String loaiGia = phong.getLoaiGia();
 
-            double tongGiaThue = giaPhong;
+                double tongGiaThue = giaPhong;
 
-            if ("Theo đầu người".equalsIgnoreCase(loaiGia)) {
-                int soNguoiO = ntDAO.countNguoiThueByMaPhong(maPhong);
-                if (soNguoiO == 0) {
-                    soNguoiO = 1;
+                if ("Theo đầu người".equalsIgnoreCase(loaiGia)) {
+                    int soNguoiO = ntDAO.countNguoiThueByMaPhong(maPhong);
+                    if (soNguoiO == 0) {
+                        soNguoiO = 1;
+                    }
+                    tongGiaThue = giaPhong * soNguoiO;
                 }
-                tongGiaThue = giaPhong * soNguoiO;
-            }
 
-            txtGiaThue.setText(String.format("%.0f", tongGiaThue));
-            hdDAO.updateGiaThueByMaPhong(maPhong, tongGiaThue); 
-           
+                txtGiaThue.setText(String.format("%.0f", tongGiaThue));
+                hdDAO.updateGiaThueByMaPhong(maPhong, tongGiaThue);
+
+            }
         }
     }
-}
-public javax.swing.JTable getTblHopDong() {
-    return tblHopDong; 
-}
+
+    public javax.swing.JTable getTblHopDong() {
+        return tblHopDong;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboNguoiThue;
     private javax.swing.JButton btInHD;
