@@ -18,7 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="jPanel2" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="jPanel2" alignment="0" pref="882" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="131" max="-2" attributes="0"/>
                       <Component id="btThem" linkSize="2" min="-2" pref="107" max="-2" attributes="0"/>
@@ -287,6 +287,9 @@
           </Properties>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="dtcNgaySinh">
+          <Properties>
+            <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -342,6 +345,7 @@
                     <Column editable="true" title="Title 4" type="java.lang.Object"/>
                   </Table>
                 </Property>
+                <Property name="selectionMode" type="int" value="0"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblNguoiThueMouseClicked"/>

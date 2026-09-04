@@ -53,7 +53,7 @@
 
     <!-- 5. Chi tiết nội dung Hóa Đơn -->
     <detail>
-        <band height="310">
+        <band height="380">
             <!-- Mã Hóa Đơn -->
             <staticText>
                 <reportElement x="30" y="10" width="120" height="20"/>
@@ -65,7 +65,7 @@
                 <textFieldExpression><![CDATA[$F{MaHoaDon}]]></textFieldExpression>
             </textField>
 
-            <!-- Khách Thuê (Lấy từ bảng NGUOITHUE.HoTen) -->
+            <!-- Khách Thuê -->
             <staticText>
                 <reportElement x="30" y="35" width="120" height="20"/>
                 <textElement><font isBold="true"/></textElement>
@@ -126,15 +126,6 @@
                 <reportElement x="160" y="160" width="200" height="20"/>
                 <textFieldExpression><![CDATA[$F{TienNuoc}]]></textFieldExpression>
             </textField>
-              <!-- Tiền Phòng -->
-            <staticText>
-                <reportElement x="30" y="100" width="120" height="20"/>
-                <text><![CDATA[Tiền Phòng:]]></text>
-            </staticText>
-            <textField pattern="#,##0 VNĐ">
-                <reportElement x="160" y="100" width="200" height="20"/>
-                <textFieldExpression><![CDATA[$F{TienPhong}]]></textFieldExpression>
-            </textField>
 
             <!-- Đường kẻ nét đứt -->
             <line>
@@ -163,6 +154,39 @@
                     <pen lineWidth="1.5" lineColor="#000000"/>
                 </graphicElement>
             </line>
+
+            <!-- THỜI GIAN IN HÓA ĐƠN VÀ CHỮ KÝ -->
+            <!-- Ngày giờ in tự động -->
+            <staticText>
+                <reportElement x="300" y="260" width="70" height="20"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Ngày in: ]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm:ss">
+                <reportElement x="370" y="260" width="155" height="20"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+
+            <!-- Khu vực ký tên -->
+            <staticText>
+                <reportElement x="350" y="285" width="175" height="20"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Người lập hóa đơn]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="305" width="175" height="15"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[(Ký, ghi rõ họ tên)]]></text>
+            </staticText>
         </band>
     </detail>
 </jasperReport>

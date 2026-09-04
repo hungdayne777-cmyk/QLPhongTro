@@ -177,31 +177,39 @@ public class HopDongDAO {
     }
 
     public List<HopDong> findByName(String name) {
-        List<HopDong> ds = new ArrayList<>();
-        String sql = "SELECT * FROM HOPDONG WHERE MaHD LIKE ? OR MaNT LIKE ?";
+       List<HopDong> ds = new ArrayList<>();
+    
+    // Sử dụng INNER JOIN để tìm kiếm theo tên người thuê (HoTen) từ bảng NGUOITHUE
+    String sql = "SELECT hd.* FROM HOPDONG hd " +
+                 "JOIN NGUOITHUE nt ON hd.MaNT = nt.MaNT " +
+                 "WHERE hd.MaHD LIKE ? OR hd.MaNT LIKE ? OR nt.HoTen LIKE ? OR hd.MaPhong LIKE ?";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, "%" + name + "%");
-            ps.setString(2, "%" + name + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String maHD = rs.getString("MaHD");
-                    String maNT = rs.getString("MaNT");
+        String key = "%" + name.trim() + "%";
+        ps.setString(1, key); // Tìm theo Mã hợp đồng
+        ps.setString(2, key); // Tìm theo Mã người thuê
+        ps.setString(3, key); // Tìm theo Tên người thuê (HoTen)
+        ps.setString(4, key); // Tìm theo Mã phòng
 
-                    String maPhong = rs.getString("MaPhong");
-                    Date ngayBD = rs.getDate("NgayBatDau");
-                    Date ngayKT = rs.getDate("NgayKetThuc");
-                    double giaThue = rs.getDouble("GiaThue");
-                    String trangThai = rs.getString("TrangThai");
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String maHD = rs.getString("MaHD");
+                String maNT = rs.getString("MaNT");
+                String maPhong = rs.getString("MaPhong");
+                Date ngayBD = rs.getDate("NgayBatDau");
+                Date ngayKT = rs.getDate("NgayKetThuc");
+                double giaThue = rs.getDouble("GiaThue");
+                String trangThai = rs.getString("TrangThai");
 
-                    ds.add(new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai));
-                }
+                ds.add(new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai));
             }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi tìm kiếm hợp đồng: " + e.getMessage());
+    }
+    return ds;
     }
 
     public boolean hasActiveContract(String maPhong) {

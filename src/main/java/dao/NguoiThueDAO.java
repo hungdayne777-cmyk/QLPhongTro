@@ -211,4 +211,20 @@ public class NguoiThueDAO {
             return false;
         }
     }
+     public boolean hasHopDong(String maNT) {
+    String sql = "SELECT COUNT(*) FROM HOPDONG WHERE MaNT = ?";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, maNT);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu đã có hợp đồng
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi kiểm tra hợp đồng: " + e.getMessage());
+    }
+    return false;
+}
 }

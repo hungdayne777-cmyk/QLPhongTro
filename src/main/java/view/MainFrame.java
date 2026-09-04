@@ -4,6 +4,7 @@
  */
 package view;
 
+import dao.HoaDonDAO;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import util.ExcelExporter;
@@ -37,13 +38,8 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
 
-        // SỰ KIỆN XUẤT FILE EXCEL
-        jMenuXuatPhongTro.addActionListener(this::jMenuXuatPhongTroActionPerformed);
-        jMenuXuatNgThue.addActionListener(this::jMenuXuatNgThueActionPerformed);
-        jMenuXuatHopDong.addActionListener(this::jMenuXuatHopDongActionPerformed);
-        jMenuXuatHD.addActionListener(this::jMenuXuatHDActionPerformed);
-        // --- ĐĂNG KÝ SỰ KIỆN CHO NÚT ABOUT US ---
-        btAbout.addActionListener(this::btAboutActionPerformed);
+    
+       new HoaDonDAO().updateTrangThaiQuaHan();
         // Đăng ký sự kiện mở Popup khi click vào btHelp
         btHelp.addActionListener(this::btHelpActionPerformed);
         // BẮT BUỘC: Khởi tạo biến Panel và gán vào thuộc tính của Class
@@ -81,6 +77,7 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuXuatNgThue = new javax.swing.JMenuItem();
         jMenuXuatHopDong = new javax.swing.JMenuItem();
         jMenuXuatHD = new javax.swing.JMenuItem();
+        jMenuThoat = new javax.swing.JMenuItem();
         jPopupHelp = new javax.swing.JPopupMenu();
         jMenuHelpPhongTro = new javax.swing.JMenuItem();
         jMenuHelpNgThue = new javax.swing.JMenuItem();
@@ -119,27 +116,33 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuXuatHD.addActionListener(this::jMenuXuatHDActionPerformed);
         jPopupXuatFile.add(jMenuXuatHD);
 
+        jMenuThoat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMenuThoat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/button.png"))); // NOI18N
+        jMenuThoat.setText("Đóng Phần Mềm");
+        jMenuThoat.addActionListener(this::jMenuThoatActionPerformed);
+        jPopupXuatFile.add(jMenuThoat);
+
         jMenuHelpPhongTro.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMenuHelpPhongTro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/key.png"))); // NOI18N
-        jMenuHelpPhongTro.setText("Xuất danh sách Phòng");
+        jMenuHelpPhongTro.setText("Hướng Dẫn Quản Lý Phòng");
         jMenuHelpPhongTro.addActionListener(this::jMenuHelpPhongTroActionPerformed);
         jPopupHelp.add(jMenuHelpPhongTro);
 
         jMenuHelpNgThue.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMenuHelpNgThue.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teamwork.png"))); // NOI18N
-        jMenuHelpNgThue.setText("Xuất danh sách Người Thuê");
+        jMenuHelpNgThue.setText("Hướng Dẫn Quản Lý Người Thuê");
         jMenuHelpNgThue.addActionListener(this::jMenuHelpNgThueActionPerformed);
         jPopupHelp.add(jMenuHelpNgThue);
 
         jMenuHelpHopDong.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMenuHelpHopDong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/contract.png"))); // NOI18N
-        jMenuHelpHopDong.setText("Xuất danh sách Hợp Đồng");
+        jMenuHelpHopDong.setText("Hướng Dẫn Tạo Hợp Đồng");
         jMenuHelpHopDong.addActionListener(this::jMenuHelpHopDongActionPerformed);
         jPopupHelp.add(jMenuHelpHopDong);
 
         jMenuHelpHD.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMenuHelpHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bill.png"))); // NOI18N
-        jMenuHelpHD.setText("Xuất danh sách Hóa Đơn");
+        jMenuHelpHD.setText("Hướng Dẫn Tạo Hóa Đơn");
         jMenuHelpHD.addActionListener(this::jMenuHelpHDActionPerformed);
         jPopupHelp.add(jMenuHelpHD);
 
@@ -352,6 +355,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btFile1ActionPerformed
 
+    private void jMenuThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuThoatActionPerformed
+    this.dispose();
+    }//GEN-LAST:event_jMenuThoatActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -387,6 +394,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuHelpHopDong;
     private javax.swing.JMenuItem jMenuHelpNgThue;
     private javax.swing.JMenuItem jMenuHelpPhongTro;
+    private javax.swing.JMenuItem jMenuThoat;
     private javax.swing.JMenuItem jMenuXuatHD;
     private javax.swing.JMenuItem jMenuXuatHopDong;
     private javax.swing.JMenuItem jMenuXuatNgThue;

@@ -210,23 +210,27 @@ public class HoaDonDAO {
     }
 
     public List<HoaDon> findByName(String name) {
-        List<HoaDon> ds = new ArrayList<>();
-        String sql = "SELECT hd.*, nt.HoTen \n"
-                + "FROM HoaDon hd\n"
-                + "LEFT JOIN HOPDONG hdt ON hd.MaHD = hdt.MaHD\n"
-                + "LEFT JOIN NGUOITHUE nt ON hdt.MaNT = nt.MaNT\n"
-                + "WHERE hd.MaHoaDon LIKE ? \n"
-                + "   OR hdt.MaPhong LIKE ? \n"
-                + "   OR nt.HoTen LIKE ?";
+     List<HoaDon> ds = new ArrayList<>();
+    
+   
+    String sql = "SELECT hd.*, nt.HoTen "
+            + "FROM HoaDon hd "
+            + "JOIN HOPDONG hdt ON hd.MaHD = hdt.MaHD " 
+            + "LEFT JOIN NGUOITHUE nt ON hdt.MaNT = nt.MaNT "
+            + "WHERE (hdt.TrangThai = N'Đang hiệu lực' OR hdt.TrangThai = N'Đang hiệu lực') " // Điều kiện hợp đồng
+            + "  AND (hd.MaHoaDon LIKE ? OR hdt.MaPhong LIKE ? OR nt.HoTen LIKE ?)";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, "%" + name + "%");
-            ps.setString(2, "%" + name + "%");
-            ps.setString(3, "%" + name + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String maHoaDon = rs.getString("MaHoaDon");
+        String searchKey = "%" + name.trim() + "%";
+        ps.setString(1, searchKey);
+        ps.setString(2, searchKey);
+        ps.setString(3, searchKey);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String maHoaDon = rs.getString("MaHoaDon");
                 String maHD = rs.getString("MaHD");
 
                 int thang = rs.getInt("Thang");
@@ -247,27 +251,17 @@ public class HoaDonDAO {
                 String trangThaiTT = rs.getString("TrangThaiThanhToan");
 
                 ds.add(new HoaDon(
-                        maHoaDon,
-                        maHD,
-                        thang,
-                        nam,
-                        csDienCu,
-                        csDienMoi,
-                        dgDien,
-                        csNuocCu,
-                        csNuocMoi,
-                        dgNuoc,
-                        tienPhong,
-                        tongTien,
-                        ngayHH,
-                        trangThaiTT
+                        maHoaDon, maHD, thang, nam,
+                        csDienCu, csDienMoi, dgDien,
+                        csNuocCu, csNuocMoi, dgNuoc,
+                        tienPhong, tongTien, ngayHH, trangThaiTT
                 ));
-                }
             }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi tìm kiếm hóa đơn theo tên: " + e.getMessage());
+    }
+    return ds;
     }
 
     public double[] getChiSoMoiNhatByMaHD(String maHD) {
@@ -344,5 +338,21 @@ public class HoaDonDAO {
         }
         return null;
     }
+public void updateTrangThaiQuaHan() {
+    String sql = "UPDATE HoaDon "
+               + "SET TrangThaiThanhToan = N'Quá hạn' "
+               + "WHERE TrangThaiThanhToan = N'Chưa thanh toán' "
+               + "  AND NgayHetHan < CAST(GETDATE() AS DATE)";
 
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        int rows = ps.executeUpdate();
+        if (rows > 0) {
+            System.out.println("Tự động cập nhật thành công " + rows + " hóa đơn quá hạn.");
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi tự động cập nhật quá hạn: " + e.getMessage());
+    }
+}
 }

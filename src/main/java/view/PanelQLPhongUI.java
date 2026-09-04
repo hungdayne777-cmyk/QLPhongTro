@@ -20,11 +20,12 @@ import model.Phong;
  */
 public class PanelQLPhongUI extends javax.swing.JPanel {
 
-     private PhongDAO pDAO = new PhongDAO();
+    private PhongDAO pDAO = new PhongDAO();
     private HopDongDAO hdDAO = new HopDongDAO();
     private HoaDonDAO hoadonDAO = new HoaDonDAO();
     private NguoiThueDAO ntDAO = new NguoiThueDAO();
     DecimalFormat df = new DecimalFormat("#,###");
+
     /**
      * Creates new form PanelQLPhongUI
      */
@@ -53,13 +54,14 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
     }
 
     public void refreshData() {
-        loadTablePhong(pDAO.findAll()); 
+        loadTablePhong(pDAO.findAll());
         txtMaPhong.setText("");
         txtTenPhong.setText("");
         txtGiaPhong.setText("");
         SpnSLNguoi.setValue(0);
         txtKeyword.setText("");
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,6 +108,7 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblPhongThue.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblPhongThue.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblPhongThueMouseClicked(evt);
@@ -147,6 +150,7 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText("Giá Phòng");
 
+        txtGiaPhong.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         txtGiaPhong.addActionListener(this::txtGiaPhongActionPerformed);
 
         cboLoaiGia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cố định", "Theo đầu người" }));
@@ -298,14 +302,14 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
     private void btTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimActionPerformed
         // TODO add your handling code here:
         String keyword = txtKeyword.getText().trim();
-    
-    if (keyword.isEmpty()) {
-        // Nếu không gõ gì mà bấm Tìm -> Hiển thị lại toàn bộ danh sách
-        loadTablePhong(pDAO.findAll());
-    } else {
-        // Gọi hàm findByName có sẵn trong PhongDAO để lọc dữ liệu
-        loadTablePhong(pDAO.findByName(keyword));
-    }
+
+        if (keyword.isEmpty()) {
+            // Nếu không gõ gì mà bấm Tìm -> Hiển thị lại toàn bộ danh sách
+            loadTablePhong(pDAO.findAll());
+        } else {
+            // Gọi hàm findByName có sẵn trong PhongDAO để lọc dữ liệu
+            loadTablePhong(pDAO.findByName(keyword));
+        }
     }//GEN-LAST:event_btTimActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
@@ -314,29 +318,38 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btLamMoiActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
-        // TODO add your handling code here:
         String maPhong = txtMaPhong.getText().trim();
 
-    if (maPhong.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    int confirm = JOptionPane.showConfirmDialog(
-        this, 
-        "Bạn có chắc chắn muốn xóa phòng " + maPhong + " không?", 
-        "Xác nhận xóa", 
-        JOptionPane.YES_NO_OPTION
-    );
-
-    if (confirm == JOptionPane.YES_OPTION) {
-        if (pDAO.delete(maPhong)) {
-            JOptionPane.showMessageDialog(this, "Xóa phòng thành công!");
-            refreshData();
-        } else {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại! Phòng này có thể đang gắn liền với Hợp đồng cũ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (maPhong.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
+
+        // 1. Kiểm tra ràng buộc chủ động trước khi hỏi xóa
+        Phong p = pDAO.findById(maPhong);
+        if (p != null && "Đã thuê".equalsIgnoreCase(p.getTrangThai())) {
+            JOptionPane.showMessageDialog(this,
+                    "Không thể xóa! Phòng " + maPhong + " hiện đang có người thuê.\nVui lòng thanh lý hợp đồng trước khi xóa phòng.",
+                    "Cảnh báo ràng buộc",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa phòng " + maPhong + " không?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (pDAO.delete(maPhong)) {
+                JOptionPane.showMessageDialog(this, "Xóa phòng thành công!");
+                refreshData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại! Phòng này có dữ liệu lịch sử liên kết.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
 
 
     }//GEN-LAST:event_btXoaActionPerformed
@@ -344,32 +357,32 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
     private void btSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaActionPerformed
         // TODO add your handling code here:
         String maPhong = txtMaPhong.getText().trim();
-    String tenPhong = txtTenPhong.getText().trim();
-    String giaStr = txtGiaPhong.getText().trim();
-    int soNguoi = (int) SpnSLNguoi.getValue();
-    String loaiGia = cboLoaiGia.getSelectedItem().toString();
-    String trangThai = CboTrangThai.getSelectedItem().toString();
+        String tenPhong = txtTenPhong.getText().trim();
+        String giaStr = txtGiaPhong.getText().trim();
+        int soNguoi = (int) SpnSLNguoi.getValue();
+        String loaiGia = cboLoaiGia.getSelectedItem().toString();
+        String trangThai = CboTrangThai.getSelectedItem().toString();
 
-    if (maPhong.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần sửa từ bảng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+        if (maPhong.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần sửa từ bảng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    double giaPhong = 0;
-    try {
-        giaPhong = Double.parseDouble(giaStr);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Giá phòng phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        double giaPhong = 0;
+        try {
+            giaPhong = Double.parseDouble(giaStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá phòng phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    Phong p = new Phong(maPhong, tenPhong, soNguoi, giaPhong, loaiGia, trangThai);
-    if (pDAO.update(p)) {
-        JOptionPane.showMessageDialog(this, "Cập nhật thông tin phòng thành công!");
-        refreshData();
-    } else {
-        JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
+        Phong p = new Phong(maPhong, tenPhong, soNguoi, giaPhong, loaiGia, trangThai);
+        if (pDAO.update(p)) {
+            JOptionPane.showMessageDialog(this, "Cập nhật thông tin phòng thành công!");
+            refreshData();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btSuaActionPerformed
 
     private void btThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemActionPerformed
@@ -404,7 +417,7 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Thêm thất bại! Mã phòng có thể đã tồn tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-     
+
     }//GEN-LAST:event_btThemActionPerformed
 
     private void tblPhongThueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPhongThueMouseClicked
@@ -424,9 +437,9 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblPhongThueMouseClicked
 
-public javax.swing.JTable getTblPhongThue() {
-    return tblPhongThue; 
-}
+    public javax.swing.JTable getTblPhongThue() {
+        return tblPhongThue;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboTrangThai;
     private javax.swing.JSpinner SpnSLNguoi;
@@ -452,4 +465,3 @@ public javax.swing.JTable getTblPhongThue() {
     private javax.swing.JTextField txtTenPhong;
     // End of variables declaration//GEN-END:variables
 }
-

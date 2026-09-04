@@ -152,6 +152,7 @@ public class PanelHopDongUI extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblHopDong.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblHopDong.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblHopDongMouseClicked(evt);
@@ -188,11 +189,16 @@ public class PanelHopDongUI extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Phòng");
 
+        txtGiaThue.setEditable(false);
+        txtGiaThue.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+
         cboChonPhong.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboChonPhong.addActionListener(this::cboChonPhongActionPerformed);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel9.setText("Ngày Bắt Đầu");
+
+        dtcNgayBD.setDateFormatString("dd/MM/yyyy");
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Người Thuê");
@@ -208,6 +214,8 @@ public class PanelHopDongUI extends javax.swing.JPanel {
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setText("Ngày Kết Thúc");
+
+        dtcNgayKT.setDateFormatString("dd/MM/yyyy");
 
         btTimHopDong.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btTimHopDong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
@@ -514,63 +522,90 @@ public class PanelHopDongUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btThemHDActionPerformed
 
     private void btnGiaHanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGiaHanActionPerformed
-        int row = tblHopDong.getSelectedRow();
-        if (row < 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần gia hạn trong bảng!");
+     int row = tblHopDong.getSelectedRow();
+    if (row < 0) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hợp đồng cần gia hạn trong bảng!");
+        return;
+    }
+
+    try {
+        String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
+        HopDong hdHienTai = hdDAO.findById(maHD);
+
+        if (hdHienTai == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin hợp đồng!");
             return;
         }
 
-        try {
-            String maHD = tblHopDong.getValueAt(row, 0).toString().trim();
-            HopDong hdHienTai = hdDAO.findById(maHD);
-
-            if (hdHienTai == null) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin hợp đồng!");
-                return;
-            }
-
-            if ("Đã thanh lý".equalsIgnoreCase(hdHienTai.getTrangThai())) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Hợp đồng này ĐÃ THANH LÝ, không thể gia hạn!\nVui lòng tạo hợp đồng mới nếu khách thuê lại.",
-                        "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String maPhong = cboChonPhong.getSelectedItem().toString();
-            String maNT = CboNguoiThue.getSelectedItem().toString();
-            double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
-
-            java.util.Date ngayBD = dtcNgayBD.getDate();
-            java.util.Date ngayKT = dtcNgayKT.getDate();
-
-            if (ngayKT != null && ngayBD != null && ngayKT.before(ngayBD)) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Ngày kết thúc mới phải sau ngày bắt đầu!");
-                return;
-            }
-
-            String trangThai = "Đang hiệu lực";
-
-            HopDong hd = new HopDong(maHD, maNT, maPhong, ngayBD, ngayKT, giaThue, trangThai);
-
-            if (hdDAO.update(hd)) {
-                // Đảm bảo cập nhật đồng bộ CSDL
-                pDAO.updateTrangThai(maPhong, "Đã thuê");
-                ntDAO.updateMaPhong(maNT, maPhong);
-
-                javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn hợp đồng thành công!");
-
-                napDuLieuTableHopDong();
-                txtHopDong.setEnabled(true);
-
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn thất bại!");
-            }
-
-        } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Giá thuê phải là số hợp lệ!");
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi gia hạn: " + e.getMessage());
+        if ("Đã thanh lý".equalsIgnoreCase(hdHienTai.getTrangThai())) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Hợp đồng này ĐÃ THANH LÝ, không thể gia hạn!\nVui lòng tạo hợp đồng mới nếu khách thuê lại.",
+                    "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        String maPhongMoi = cboChonPhong.getSelectedItem().toString().trim();
+        String maPhongCu = hdHienTai.getMaPhong(); // Lưu lại mã phòng hiện tại
+        String maNT = CboNguoiThue.getSelectedItem().toString().trim();
+
+        if (!maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+            // Lấy thông tin phòng mới để kiểm tra trạng thái
+            Phong phongMoi = pDAO.findById(maPhongMoi); 
+            
+            // Nếu phòng mới đã có người ở hoặc không ở trạng thái "Trống" -> CHẶN
+            if (phongMoi != null && !"Trống".equalsIgnoreCase(phongMoi.getTrangThai())) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Phòng " + maPhongMoi + " hiện đang có hợp đồng hiệu lực (" + phongMoi.getTrangThai() + ")!\nKhông thể gia hạn chuyển sang phòng này.",
+                        "Cảnh báo trùng phòng", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+      
+
+        double giaThue = Double.parseDouble(txtGiaThue.getText().trim());
+
+        java.util.Date ngayBD = dtcNgayBD.getDate();
+        java.util.Date ngayKT = dtcNgayKT.getDate();
+
+        if (ngayBD == null || ngayKT == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc!");
+            return;
+        }
+
+        if (ngayKT.before(ngayBD)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Ngày kết thúc mới phải sau ngày bắt đầu!");
+            return;
+        }
+
+        String trangThai = "Đang hiệu lực";
+
+        HopDong hd = new HopDong(maHD, maNT, maPhongMoi, ngayBD, ngayKT, giaThue, trangThai);
+
+        if (hdDAO.update(hd)) {
+         
+            
+         
+            if (!maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+                pDAO.updateTrangThai(maPhongCu, "Trống");
+            }
+
+            pDAO.updateTrangThai(maPhongMoi, "Đã thuê");
+            ntDAO.updateMaPhong(maNT, maPhongMoi);
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn hợp đồng thành công!");
+
+            napDuLieuTableHopDong();
+            txtHopDong.setEnabled(true);
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Gia hạn thất bại!");
+        }
+
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Giá thuê phải là số hợp lệ!");
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi gia hạn: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnGiaHanActionPerformed
 
     private void btThanhLyHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThanhLyHDActionPerformed
@@ -635,6 +670,7 @@ public class PanelHopDongUI extends javax.swing.JPanel {
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
+        napDuLieuTableHopDong();
         txtHopDong.setText("");
         txtGiaThue.setText("");
         dtcNgayBD.setDate(null);
@@ -663,6 +699,8 @@ public class PanelHopDongUI extends javax.swing.JPanel {
 
         // 6. Reset lại ComboBox Trạng Thái (nếu cần)
         cboTrangThaiPhongHD.setSelectedItem("Đang hiệu lực");
+         tblHopDong.clearSelection();
+
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void cboTrangThaiPhongHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTrangThaiPhongHDActionPerformed

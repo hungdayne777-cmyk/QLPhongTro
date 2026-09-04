@@ -108,6 +108,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblHoaDon.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblHoaDon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblHoaDonMouseClicked(evt);
@@ -164,6 +165,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setText("Ngày Hết Hạn");
 
+        dtcNgayHH.setDateFormatString("dd/MM/yyyy");
         dtcNgayHH.addPropertyChangeListener(this::dtcNgayHHPropertyChange);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -371,7 +373,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
         jLabel13.setText("Tiền Phòng");
 
         txtTienPhong.setEditable(false);
-        txtTienPhong.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        txtTienPhong.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel14.setText("Tổng Tiền");

@@ -213,5 +213,22 @@ public class PhongDAO {
     }
     return false;
 }
-  
+  public boolean isPhongDangThue(String maPhong) {
+    // Kiểm tra trong bảng HOPDONG (hoặc có thể kiểm tra TrangThai = N'Đã thuê')
+    String sql = "SELECT COUNT(*) FROM HOPDONG WHERE MaPhong = ? AND TrangThai = N'Đang hiệu lực'";
+    
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, maPhong);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu phòng đang có hợp đồng hiệu lực
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi kiểm tra ràng buộc phòng: " + e.getMessage());
+    }
+    return false;
+}
 }

@@ -135,6 +135,8 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel9.setText("Ngày Sinh");
 
+        dtcNgaySinh.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -233,6 +235,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblNguoiThue.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblNguoiThue.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblNguoiThueMouseClicked(evt);
@@ -282,7 +285,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 882, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(131, 131, 131)
                         .addComponent(btThem, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -504,22 +507,32 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btSuaActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
-        // TODO add your handling code here:
-        String ma = txtNguoiThue.getText().trim();
-        if (ma.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+       String ma = txtNguoiThue.getText().trim();
+        String ten = txtHoTen.getText().trim();
+    if (ma.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ma + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (ntDAO.delete(ma)) {
-                JOptionPane.showMessageDialog(this, "Xóa thành công!");
-                NapDuLieuTableNguoiThue();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+    // 1. Kiểm tra xem Người thuê này đã ký hợp đồng chưa
+    if (ntDAO.hasHopDong(ma)) {
+        JOptionPane.showMessageDialog(this, 
+            "Không thể xóa! Người thuê này đang có hợp đồng tồn tại trong hệ thống.\nVui lòng thanh lý hoặc xóa hợp đồng trước.", 
+            "Cảnh báo Xóa", 
+            JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 2. Nếu chưa có hợp đồng thì tiến hành hỏi và xóa như bình thường
+    int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ten + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (ntDAO.delete(ma)) {
+            JOptionPane.showMessageDialog(this, "Xóa thành công!");
+            NapDuLieuTableNguoiThue();
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
     }//GEN-LAST:event_btXoaActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
