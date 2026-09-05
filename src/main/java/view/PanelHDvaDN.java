@@ -557,36 +557,36 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     }//GEN-LAST:event_tblHoaDonMouseClicked
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
-        Khoi_Tao_ComboBoxHD();   
-    Khoi_Tao_Table(); 
-    // 2. Reset lựa chọn ComboBox về trạng thái chưa chọn
-    if (CboHopDong.getItemCount() > 0) {
-        CboHopDong.setSelectedIndex(-1);
-    }
-    if (cboTrangThaiTT.getItemCount() > 0) {
-        cboTrangThaiTT.setSelectedIndex(-1);
-    }
+        Khoi_Tao_ComboBoxHD();
+        Khoi_Tao_Table();
+        // 2. Reset lựa chọn ComboBox về trạng thái chưa chọn
+        if (CboHopDong.getItemCount() > 0) {
+            CboHopDong.setSelectedIndex(-1);
+        }
+        if (cboTrangThaiTT.getItemCount() > 0) {
+            cboTrangThaiTT.setSelectedIndex(-1);
+        }
 
-    // 3. Xoá trắng các ô nhập liệu
-    txtMaHoaDon.setText("");
-    txtdgdien.setText("");
-    txtdgnuoc.setText("");
-    txtdienmoi.setText("");
-    txtnuocmoi.setText("");
-    txtTienPhong.setText("");
-    txtTongTien.setText("");
-    txtdiencu.setText("");
-    txtnuoccu.setText("");
+        // 3. Xoá trắng các ô nhập liệu
+        txtMaHoaDon.setText("");
+        txtdgdien.setText("");
+        txtdgnuoc.setText("");
+        txtdienmoi.setText("");
+        txtnuocmoi.setText("");
+        txtTienPhong.setText("");
+        txtTongTien.setText("");
+        txtdiencu.setText("");
+        txtnuoccu.setText("");
 
-    // 4. Đặt lại giá trị mặc định cho Tháng, Năm và Ngày
-    SpnThang.setValue(java.time.LocalDate.now().getMonthValue()); // Lấy tháng hiện tại
-    SpnNam.setValue(java.time.LocalDate.now().getYear());         // Lấy năm hiện tại
-    dtcNgayHH.setDate(null);
+        // 4. Đặt lại giá trị mặc định cho Tháng, Năm và Ngày
+        SpnThang.setValue(java.time.LocalDate.now().getMonthValue()); // Lấy tháng hiện tại
+        SpnNam.setValue(java.time.LocalDate.now().getYear());         // Lấy năm hiện tại
+        dtcNgayHH.setDate(null);
 
-    // 5. Bỏ chọn trên bảng và mở khóa Mã hóa đơn (nếu có)
-    tblHoaDon.clearSelection();
-    txtMaHoaDon.setEnabled(true);
-    txtMaHoaDon.requestFocus();
+        // 5. Bỏ chọn trên bảng và mở khóa Mã hóa đơn (nếu có)
+        tblHoaDon.clearSelection();
+        txtMaHoaDon.setEnabled(true);
+        txtMaHoaDon.requestFocus();
 
     }//GEN-LAST:event_btLamMoiActionPerformed
 
@@ -975,7 +975,7 @@ public class PanelHDvaDN extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void Khoi_Tao_Table() {
-
+        hoaDonDao.updateTrangThaiQuaHan();
         DefaultTableModel model = new DefaultTableModel();
         model = (DefaultTableModel) tblHoaDon.getModel();
 
@@ -1008,6 +1008,35 @@ public class PanelHDvaDN extends javax.swing.JPanel {
                 strNgayHH,
                 hd.getTrangThaiTT(),});
         }
+        tblHoaDon.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                Object val = table.getValueAt(row, 13);
+
+                if (val != null && val.toString().equalsIgnoreCase("Quá hạn")) {
+                    if (!isSelected) {
+                        c.setForeground(java.awt.Color.RED);
+                        c.setBackground(new java.awt.Color(255, 230, 230));
+                    } else {
+                        c.setForeground(java.awt.Color.WHITE);
+                        c.setBackground(java.awt.Color.RED);
+                    }
+                } else {
+                    if (!isSelected) {
+                        c.setForeground(java.awt.Color.BLACK);
+                        c.setBackground(java.awt.Color.WHITE);
+                    } else {
+                        c.setForeground(table.getSelectionForeground());
+                        c.setBackground(table.getSelectionBackground());
+                    }
+                }
+                return c;
+            }
+        });
     }
 
     private void Khoi_Tao_ComboBoxHD() {
@@ -1122,7 +1151,8 @@ public class PanelHDvaDN extends javax.swing.JPanel {
 
         return Double.parseDouble(value);
     }
+
     public javax.swing.JTable getTblHoaDon() {
-    return tblHoaDon; // Thay tblHoaDon bằng đúng tên variable JTable của bạn
-}
+        return tblHoaDon; // Thay tblHoaDon bằng đúng tên variable JTable của bạn
+    }
 }

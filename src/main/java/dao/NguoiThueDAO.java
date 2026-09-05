@@ -189,7 +189,7 @@ public class NguoiThueDAO {
     return 0;
 }
      public boolean clearMaPhong(String maNguoiThue) {
-    String sql = "UPDATE NGUOITHUE SET MaPhong = NULL WHERE MaNguoiThue = ?";
+    String sql = "UPDATE NGUOITHUE SET MaPhong = NULL WHERE MaNT = ?";
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement pst = conn.prepareStatement(sql)) {
         pst.setString(1, maNguoiThue);
