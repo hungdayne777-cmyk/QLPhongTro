@@ -344,4 +344,20 @@ public class HopDongDAO {
             }
         }
     }
+    
+   public boolean hasActiveContractByNguoiThue(String maNguoiThue) {
+    String sql = "SELECT COUNT(*) FROM HOPDONG WHERE LTRIM(RTRIM(MaNT)) = LTRIM(RTRIM(?)) AND TrangThai = N'Đang hiệu lực'";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, maNguoiThue.trim());
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+} 
 }

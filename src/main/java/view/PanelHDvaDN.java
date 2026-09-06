@@ -1009,33 +1009,55 @@ public class PanelHDvaDN extends javax.swing.JPanel {
                 hd.getTrangThaiTT(),});
         }
         tblHoaDon.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
-            @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
+       @Override
+    public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
 
-                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                Object val = table.getValueAt(row, 13);
+        Object val = table.getValueAt(row, 13);
+        String trangThai = (val != null) ? val.toString().trim() : "";
 
-                if (val != null && val.toString().equalsIgnoreCase("Quá hạn")) {
-                    if (!isSelected) {
-                        c.setForeground(java.awt.Color.RED);
-                        c.setBackground(new java.awt.Color(255, 230, 230));
-                    } else {
-                        c.setForeground(java.awt.Color.WHITE);
-                        c.setBackground(java.awt.Color.RED);
-                    }
-                } else {
-                    if (!isSelected) {
-                        c.setForeground(java.awt.Color.BLACK);
-                        c.setBackground(java.awt.Color.WHITE);
-                    } else {
-                        c.setForeground(table.getSelectionForeground());
-                        c.setBackground(table.getSelectionBackground());
-                    }
-                }
-                return c;
+        if (trangThai.equalsIgnoreCase("Quá hạn")) {
+            // 1. QUÁ HẠN -> ĐỎ (Cảnh báo nguy hiểm)
+            if (!isSelected) {
+                c.setForeground(java.awt.Color.RED);
+                c.setBackground(new java.awt.Color(255, 230, 230)); 
+            } else {
+                c.setForeground(java.awt.Color.WHITE);
+                c.setBackground(java.awt.Color.RED);
             }
+        } else if (trangThai.equalsIgnoreCase("Đã thanh toán")) {
+            // 2. ĐÃ THANH TOÁN -> XANH LÁ (Hoàn thành)
+            if (!isSelected) {
+                c.setForeground(new java.awt.Color(0, 100, 0)); 
+                c.setBackground(new java.awt.Color(230, 255, 230)); 
+            } else {
+                c.setForeground(java.awt.Color.WHITE);
+                c.setBackground(new java.awt.Color(46, 139, 87)); 
+            }
+        } else if (trangThai.equalsIgnoreCase("Chưa thanh toán")) {
+            // 3. CHƯA THANH TOÁN -> VÀNG / CAM NHẠT (Đang chờ)
+            if (!isSelected) {
+                c.setForeground(new java.awt.Color(180, 90, 0)); // Chữ cam đậm cho dễ đọc
+                c.setBackground(new java.awt.Color(255, 250, 205)); // Nền kem / vàng nhạt dịu mắt
+            } else {
+                c.setForeground(java.awt.Color.WHITE);
+                c.setBackground(new java.awt.Color(218, 165, 32)); // Nền vàng đất khi click chọn
+            }
+        } else {
+            // Mặc định cho các trường hợp khác
+            if (!isSelected) {
+                c.setForeground(java.awt.Color.BLACK);
+                c.setBackground(java.awt.Color.WHITE);
+            } else {
+                c.setForeground(table.getSelectionForeground());
+                c.setBackground(table.getSelectionBackground());
+            }
+        }
+        return c;
+    }
+    
         });
     }
 

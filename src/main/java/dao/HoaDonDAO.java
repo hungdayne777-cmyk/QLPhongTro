@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.HoaDon;
+import model.NguoiThue;
 import util.DBConnection;
 
 /**
@@ -180,33 +181,41 @@ public class HoaDonDAO {
     }
 
     public List<HoaDon> findNoQuaHan() {
-        List<HoaDon> ds = new ArrayList<>();
-        // Sửa TrangThaiTT -> TrangThai (hoặc tên cột thực tế trong bảng HOADON)
-        String sql = "SELECT * FROM HOADON WHERE TrangThaiThanhToan <> N'Đã thanh toán' AND NgayHetHan < GETDATE()";
+       List<HoaDon> ds = new ArrayList<>();
+    
+    // JOIN bảng HOPDONG để kiểm tra trạng thái hợp đồng (loại bỏ hợp đồng đã thanh lý)
+    String sql = "SELECT hd.* FROM HOADON hd "
+               + "JOIN HOPDONG h ON hd.MaHD = h.MaHD "
+               + "WHERE hd.TrangThaiThanhToan <> N'Đã thanh toán' "
+               + "  AND hd.NgayHetHan < GETDATE() "
+               + "  AND h.TrangThai = N'Đang hiệu lực'"; // Chỉ lấy hóa đơn của hợp đồng đang hoạt động
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                ds.add(new HoaDon(
-                        rs.getString("MaHoaDon"),
-                        rs.getString("MaHD"),
-                        rs.getInt("Thang"),
-                        rs.getInt("Nam"),
-                        rs.getDouble("CSDienCu"),
-                        rs.getDouble("CSDienMoi"),
-                        rs.getDouble("DonGiaDien"),
-                        rs.getDouble("CSNuocCu"),
-                        rs.getDouble("CSNuocMoi"),
-                        rs.getDouble("DonGiaNuoc"),
-                        rs.getDouble("TienPhong"),
-                        rs.getDouble("TongTien"),
-                        rs.getDate("NgayHetHan"),
-                        rs.getString("TrangThaiThanhToan")
-                ));
-            }
-        } catch (SQLException e) {
-            System.out.println("Lỗi HoaDonDAO.findNoQuaHan: " + e.getMessage());
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
+        
+        while (rs.next()) {
+            ds.add(new HoaDon(
+                    rs.getString("MaHoaDon"),
+                    rs.getString("MaHD"),
+                    rs.getInt("Thang"),
+                    rs.getInt("Nam"),
+                    rs.getDouble("CSDienCu"),
+                    rs.getDouble("CSDienMoi"),
+                    rs.getDouble("DonGiaDien"),
+                    rs.getDouble("CSNuocCu"),
+                    rs.getDouble("CSNuocMoi"),
+                    rs.getDouble("DonGiaNuoc"),
+                    rs.getDouble("TienPhong"),
+                    rs.getDouble("TongTien"),
+                    rs.getDate("NgayHetHan"),
+                    rs.getString("TrangThaiThanhToan")
+            ));
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi HoaDonDAO.findNoQuaHan: " + e.getMessage());
+    }
+    return ds;
     }
 
     public List<HoaDon> findByName(String name) {
@@ -355,4 +364,32 @@ public void updateTrangThaiQuaHan() {
         System.out.println("Lỗi tự động cập nhật quá hạn: " + e.getMessage());
     }
 }
+
+public NguoiThue getNguoiThueByMaHoaDon(String maHoaDon) {
+   String sql = "SELECT nt.* FROM NGUOITHUE nt "
+               + "JOIN HOPDONG h ON nt.MaNT = h.MaNT "
+               + "JOIN HOADON hd ON h.MaHD = hd.MaHD " 
+               + "WHERE hd.MaHoaDon = ?";
+
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, maHoaDon);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                NguoiThue nt = new NguoiThue();
+                nt.setMaNT(rs.getString("MaNT"));
+                nt.setHoTen(rs.getString("HoTen"));
+                
+              
+                nt.setSDT(rs.getString("SoDienThoai")); 
+                return nt;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // In lỗi ra console để kiểm tra nếu SQL thất bại
+    }
+    return null;
+}
+
 }

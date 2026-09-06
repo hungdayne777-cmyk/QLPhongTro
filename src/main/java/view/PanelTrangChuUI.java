@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.HoaDon;
 import model.HopDong;
+import model.NguoiThue;
 
 /**
  *
@@ -286,31 +287,84 @@ public class PanelTrangChuUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLammoiActionPerformed
 
     private void btnGuinhacnhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuinhacnhoActionPerformed
-        // TODO add your handling code here:
-        List<HoaDon> dsNo = hoadonDAO.findNoQuaHan();
-    
+       int selectedRow = tblNoquahan.getSelectedRow();
+
+    if (selectedRow != -1) {
+        String maHoaDon = tblNoquahan.getValueAt(selectedRow, 0).toString();
+        String maHD = tblNoquahan.getValueAt(selectedRow, 1).toString();
+
+        HoaDon hd = hoadonDAO.findById(maHoaDon);
+        if (hd == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if ("Đã thanh toán".equalsIgnoreCase(hd.getTrangThaiTT())) {
+            JOptionPane.showMessageDialog(this, 
+                "Hóa đơn này đã thanh toán xong, không cần gửi nhắc nhở!", 
+                "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        NguoiThue nt = hoadonDAO.getNguoiThueByMaHoaDon(maHoaDon);
+        if (nt != null && nt.getSDT() != null && !nt.getSDT().trim().isEmpty()) {
+            guiNhacNhoQuaZalo(nt.getSDT(), nt.getHoTen(), maHD, hd.getTongTien());
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy Số điện thoại người thuê cho hóa đơn này!", 
+                "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+        return;
+    }
+
+    List<HoaDon> dsNo = hoadonDAO.findNoQuaHan();
+
     if (dsNo == null || dsNo.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Hiện tại không có hóa đơn nào quá hạn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, 
+            "Bạn chưa chọn dòng nào và hiện tại cũng không có hóa đơn nào quá hạn!", 
+            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         return;
     }
 
     int confirm = JOptionPane.showConfirmDialog(
         this, 
-        "Bạn có muốn gửi thông báo nhắc nợ tới " + dsNo.size() + " hóa đơn quá hạn?", 
-        "Xác nhận", 
+        "Bạn chưa chọn hóa đơn nào trên bảng.\nBạn có muốn gửi thông báo nhắc nợ hàng loạt cho tất cả " + dsNo.size() + " hóa đơn quá hạn không?", 
+        "Xác nhận gửi hàng loạt", 
         JOptionPane.YES_NO_OPTION
     );
 
     if (confirm == JOptionPane.YES_OPTION) {
-        StringBuilder thongBao = new StringBuilder("Đã gửi nhắc nhở thành công cho:\n");
+        StringBuilder thongBao = new StringBuilder("DANH SÁCH HÓA ĐƠN QUÁ HẠN ĐÃ NHẮC NHỞ:\n-------------------------------------\n");
         for (HoaDon hd : dsNo) {
             thongBao.append("• Mã HĐ: ").append(hd.getMaHoaDon())
-                    .append(" | Hợp đồng: ").append(hd.getMaHD()).append("\n");
+                    .append(" | Hợp đồng: ").append(hd.getMaHD())
+                    .append(" | Tiền: ").append(String.format("%,.0f VNĐ", hd.getTongTien()))
+                    .append("\n");
         }
-        JOptionPane.showMessageDialog(this, thongBao.toString(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+        java.awt.datatransfer.StringSelection stringSelection = new java.awt.datatransfer.StringSelection(thongBao.toString());
+        java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+
+        JOptionPane.showMessageDialog(this, 
+            thongBao.toString() + "\n-> Đã tự động sao chép danh sách vào bộ nhớ tạm (Clipboard)!", 
+            "Thành công (" + dsNo.size() + " hóa đơn)", 
+            JOptionPane.INFORMATION_MESSAGE);
     }
     }//GEN-LAST:event_btnGuinhacnhoActionPerformed
-
+private void guiNhacNhoQuaZalo(String sdt, String hoTen, String maHD, double tongTien) {
+    try {
+        // Định dạng tin nhắn gửi
+        String noiDung = String.format("Xin chào %s, hóa đơn %s của bạn có tổng tiền là %,.0f VNĐ. Vui lòng thanh toán đúng hạn!", 
+                                       hoTen, maHD, tongTien);
+        
+        // Mở Zalo chat với số điện thoại (Yêu cầu SĐT bỏ số 0 đầu nếu dùng API, hoặc mở qua link zalo.me)
+        String url = "https://zalo.me/" + sdt.trim();
+        java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Không thể mở Zalo: " + e.getMessage());
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuinhacnho;

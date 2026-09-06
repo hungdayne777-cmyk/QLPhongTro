@@ -4,6 +4,7 @@
  */
 package view;
 
+import dao.HopDongDAO;
 import dao.NguoiThueDAO;
 import dao.PhongDAO;
 import java.text.SimpleDateFormat;
@@ -19,16 +20,18 @@ import model.Phong;
  */
 public class PanelNguoiThueUI extends javax.swing.JPanel {
 
-      NguoiThueDAO ntDAO = new NguoiThueDAO();
+    HopDongDAO hdDao = new HopDongDAO();
+    NguoiThueDAO ntDAO = new NguoiThueDAO();
     PhongDAO pDAO = new PhongDAO();
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
     /**
      * Creates new form PanelNguoiThueUI
      */
     public PanelNguoiThueUI() {
         initComponents();
         NapDuLieuCboMaPhong();
-    NapDuLieuTableNguoiThue();
+        NapDuLieuTableNguoiThue();
     }
 
     public void NapDuLieuTableNguoiThue() {
@@ -66,6 +69,7 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
             CboMaPhong.addItem(p.getMaPhong());
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -350,194 +354,261 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btTimNguoiThueActionPerformed
 
     private void tblNguoiThueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNguoiThueMouseClicked
-        // TODO add your handling code here:
         int row = tblNguoiThue.getSelectedRow();
         if (row >= 0) {
-            txtNguoiThue.setText(tblNguoiThue.getValueAt(row, 0).toString());
-            txtHoTen.setText(tblNguoiThue.getValueAt(row, 1).toString());
 
-            // Xử lý hiện Ngày Sinh lên JDateChooser
-            try {
-                String ngaySinhStr = tblNguoiThue.getValueAt(row, 2).toString();
-                if (!ngaySinhStr.isEmpty()) {
-                    java.util.Date date = sdf.parse(ngaySinhStr);
-                    dtcNgaySinh.setDate(date);
-                } else {
+            Object maNTObj = tblNguoiThue.getValueAt(row, 0);
+            Object hoTenObj = tblNguoiThue.getValueAt(row, 1);
+            Object ngaySinhObj = tblNguoiThue.getValueAt(row, 2);
+            Object soCCCObj = tblNguoiThue.getValueAt(row, 3);
+            Object soDTObj = tblNguoiThue.getValueAt(row, 4);
+            Object emailObj = tblNguoiThue.getValueAt(row, 5);
+            Object maPhongObj = tblNguoiThue.getValueAt(row, 7);
+
+            // Gán dữ liệu an toàn lên các ô nhập liệu
+            txtNguoiThue.setText(maNTObj != null ? maNTObj.toString() : "");
+            txtHoTen.setText(hoTenObj != null ? hoTenObj.toString() : "");
+
+            // Xử lý Ngày Sinh lên JDateChooser
+            if (ngaySinhObj != null) {
+                try {
+                    if (ngaySinhObj instanceof java.util.Date) {
+                        dtcNgaySinh.setDate((java.util.Date) ngaySinhObj);
+                    } else {
+                        String ngaySinhStr = ngaySinhObj.toString().trim();
+                        if (!ngaySinhStr.isEmpty()) {
+                            dtcNgaySinh.setDate(sdf.parse(ngaySinhStr));
+                        } else {
+                            dtcNgaySinh.setDate(null);
+                        }
+                    }
+                } catch (Exception e) {
                     dtcNgaySinh.setDate(null);
                 }
-            } catch (Exception e) {
+            } else {
                 dtcNgaySinh.setDate(null);
             }
 
-            txtSoCC.setText(tblNguoiThue.getValueAt(row, 3).toString());
-            txtSoDT.setText(tblNguoiThue.getValueAt(row, 4).toString());
-            txtEmail.setText(tblNguoiThue.getValueAt(row, 5).toString());
+            txtSoCC.setText(soCCCObj != null ? soCCCObj.toString() : "");
+            txtSoDT.setText(soDTObj != null ? soDTObj.toString() : "");
+            txtEmail.setText(emailObj != null ? emailObj.toString() : "");
 
-            // Nếu muốn hiện cả Mã Phòng lên ComboBox thì bật dòng này lên:
-             CboMaPhong.setSelectedItem(tblNguoiThue.getValueAt(row, 7).toString());
+            // Gán Mã Phòng lên ComboBox an toàn
+            if (maPhongObj != null) {
+                CboMaPhong.setSelectedItem(maPhongObj.toString());
+            } else {
+                CboMaPhong.setSelectedIndex(-1);
+            }
         }
     }//GEN-LAST:event_tblNguoiThueMouseClicked
 
     private void btThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemActionPerformed
-      String ma = txtNguoiThue.getText().trim();
-    String ten = txtHoTen.getText().trim();
-    String email = txtEmail.getText().trim();
-    String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
 
-    if (ma.isEmpty() || ten.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã và Họ tên người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        String cccd = txtSoCC.getText().trim();
+        String sdt = txtSoDT.getText().trim();
+        String ma = txtNguoiThue.getText().trim();
+        String ten = txtHoTen.getText().trim();
+        String email = txtEmail.getText().trim();
+        String maPhong = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
 
-    java.util.Date selectedDate = dtcNgaySinh.getDate();
-    if (selectedDate == null) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
-
-    // Lấy CCCD và SĐT dạng String chuẩn xác
-    String cccd = txtSoCC.getText().trim();
-    String sdt = txtSoDT.getText().trim();
-
-    if (!maPhong.isEmpty()) {
-    int soNguoiHienTai = ntDAO.countNguoiThueByMaPhong(maPhong);
-    Phong phong = pDAO.findById(maPhong);
-
-    if (phong == null) {
-        JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu phòng " + maPhong + " trong CSDL!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    System.out.println("DEBUG: Phong " + maPhong + " | Hien tai: " + soNguoiHienTai + " | Toi da: " + phong.getSoNguoiToiDa());
-
-    if (soNguoiHienTai >= phong.getSoNguoiToiDa()) {
-        JOptionPane.showMessageDialog(this, 
-            "Phòng " + maPhong + " đã đạt số người tối đa (" + soNguoiHienTai + "/" + phong.getSoNguoiToiDa() + ")!\nKhông thể thêm người mới.", 
-            "Cảnh báo phòng đã đầy", JOptionPane.WARNING_MESSAGE);
-        return; 
-    }
-    }
-    // ------------------------------------------------------------
-
-    java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
-
-    NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
-    
-    if (ntDAO.insert(nt)) {
-        
-        // --- BỔ SUNG LOGIC: CẬP NHẬT TRẠNG THÁI PHÒNG THÀNH 'ĐÃ THUÊ' ---
-        if (!maPhong.isEmpty()) {
-            pDAO.updateTrangThai(maPhong, "Đã thuê");
+        if (ma.isEmpty() || ten.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã và Họ tên người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        // ---------------------------------------------------------------
 
-        JOptionPane.showMessageDialog(this, "Thêm người thuê thành công!");
-        NapDuLieuTableNguoiThue();
-    } else {
-        JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
+        java.util.Date selectedDate = dtcNgaySinh.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+        if (ntDAO.isCCCDExist(cccd)) {
+            JOptionPane.showMessageDialog(this,
+                    "Số CCCD " + cccd + " đã tồn tại trong hệ thống!",
+                    "Cảnh báo trùng lặp", JOptionPane.WARNING_MESSAGE);
+            txtSoCC.requestFocus();
+            return;
+        }
+        if (ntDAO.isSDTExist(sdt)) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại " + sdt + " đã được đăng ký!", "Cảnh báo trùng lặp", JOptionPane.WARNING_MESSAGE);
+            txtSoDT.requestFocus();
+            return;
+        }
+        if (cccd.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            txtSoCC.requestFocus();
+            return;
+        }
+        if (sdt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            txtSoDT.requestFocus();
+            return;
+        }
+        if (!maPhong.isEmpty()) {
+            int soNguoiHienTai = ntDAO.countNguoiThueByMaPhong(maPhong);
+            Phong phong = pDAO.findById(maPhong);
+
+            if (phong == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu phòng " + maPhong + " trong CSDL!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            System.out.println("DEBUG: Phong " + maPhong + " | Hien tai: " + soNguoiHienTai + " | Toi da: " + phong.getSoNguoiToiDa());
+
+            if (soNguoiHienTai >= phong.getSoNguoiToiDa()) {
+                JOptionPane.showMessageDialog(this,
+                        "Phòng " + maPhong + " đã đạt số người tối đa (" + soNguoiHienTai + "/" + phong.getSoNguoiToiDa() + ")!\nKhông thể thêm người mới.",
+                        "Cảnh báo phòng đã đầy", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        // ------------------------------------------------------------
+
+        java.sql.Date ngayVaoO = new java.sql.Date(System.currentTimeMillis());
+
+        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhong);
+
+        if (ntDAO.insert(nt)) {
+
+            // --- BỔ SUNG LOGIC: CẬP NHẬT TRẠNG THÁI PHÒNG THÀNH 'ĐÃ THUÊ' ---
+            if (!maPhong.isEmpty()) {
+                pDAO.updateTrangThai(maPhong, "Đã thuê");
+            }
+            // ---------------------------------------------------------------
+
+            JOptionPane.showMessageDialog(this, "Thêm người thuê thành công!");
+            NapDuLieuTableNguoiThue();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btThemActionPerformed
 
     private void btSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaActionPerformed
         String ma = txtNguoiThue.getText().trim();
-    String ten = txtHoTen.getText().trim();
-    String email = txtEmail.getText().trim();
-    String maPhongMoi = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
+        String ten = txtHoTen.getText().trim();
+        String email = txtEmail.getText().trim();
+        String maPhongMoi = CboMaPhong.getSelectedItem() != null ? CboMaPhong.getSelectedItem().toString().trim() : "";
 
-    if (ma.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần sửa từ bảng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    java.util.Date selectedDate = dtcNgaySinh.getDate();
-    if (selectedDate == null) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
-
-    String cccd = txtSoCC.getText().trim();
-    String sdt = txtSoDT.getText().trim();
-
-    // 1. LẤY THÔNG TIN CŨ CỦA NGƯỜI THUÊ ĐỂ KIỂM TRA PHÒNG CŨ
-    NguoiThue ntHienTai = ntDAO.findById(ma);
-    if (ntHienTai == null) {
-        JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    String maPhongCu = ntHienTai.getMaPhong();
-
-    // 2. RÀNG BUỘC SĨ SỐ: CHỈ KIỂM TRA KHI ĐỔI SANG PHÒNG KHÁC
-    if (!maPhongMoi.isEmpty() && !maPhongMoi.equalsIgnoreCase(maPhongCu)) {
-        int soNguoiHienTaiPhongMoi = ntDAO.countNguoiThueByMaPhong(maPhongMoi);
-        Phong phongMoi = pDAO.findById(maPhongMoi);
-
-        if (phongMoi != null && soNguoiHienTaiPhongMoi >= phongMoi.getSoNguoiToiDa()) {
-            JOptionPane.showMessageDialog(this, 
-                "Phòng " + maPhongMoi + " đã đạt số người tối đa (" + soNguoiHienTaiPhongMoi + "/" + phongMoi.getSoNguoiToiDa() + ")!\nKhông thể chuyển người thuê sang phòng này.", 
-                "Cảnh báo phòng đầy", JOptionPane.WARNING_MESSAGE);
-            return; // Chặn không cho sửa
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần sửa từ bảng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
 
-    // Giữ nguyên ngày vào ở cũ để không làm đứt gãy lịch sử
-    java.sql.Date ngayVaoO = new java.sql.Date(ntHienTai.getNgayVaoO().getTime());
+        java.util.Date selectedDate = dtcNgaySinh.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhongMoi);
-    
-    if (ntDAO.update(nt)) {
-        // 3. CẬP NHẬT TRẠNG THÁI PHÒNG KHI CÓ CHUYỂN PHÒNG
-        if (!maPhongMoi.equalsIgnoreCase(maPhongCu)) {
-            // Nếu phòng cũ không còn ai ở thì đổi thành 'Trống'
-            if (!maPhongCu.isEmpty() && ntDAO.countNguoiThueByMaPhong(maPhongCu) == 0) {
-                pDAO.updateTrangThai(maPhongCu, "Trống");
-            }
-            // Phòng mới chắc chắn chuyển thành 'Đã thuê'
-            if (!maPhongMoi.isEmpty()) {
-                pDAO.updateTrangThai(maPhongMoi, "Đã thuê");
+        java.sql.Date ngaySql = new java.sql.Date(selectedDate.getTime());
+
+        String cccd = txtSoCC.getText().trim();
+        String sdt = txtSoDT.getText().trim();
+
+        NguoiThue ntHienTai = ntDAO.findById(ma);
+        if (ntHienTai == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu người thuê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 1. KIỂM TRA TRÙNG CCCD
+        if (!cccd.equalsIgnoreCase(ntHienTai.getCCCD())) {
+            if (ntDAO.isCCCDExist(cccd)) {
+                JOptionPane.showMessageDialog(this, "Số CCCD " + cccd + " đã thuộc về người thuê khác!", "Cảnh báo trùng lặp", JOptionPane.WARNING_MESSAGE);
+                txtSoCC.requestFocus();
+                return;
             }
         }
 
-        JOptionPane.showMessageDialog(this, "Cập nhật thông tin thành công!");
-        NapDuLieuTableNguoiThue();
-    } else {
-        JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
+        // 2. KIỂM TRA TRÙNG SĐT
+        if (!sdt.equalsIgnoreCase(ntHienTai.getSDT())) {
+            if (ntDAO.isSDTExist(sdt)) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại " + sdt + " đã thuộc về người thuê khác!", "Cảnh báo trùng lặp", JOptionPane.WARNING_MESSAGE);
+                txtSoDT.requestFocus();
+                return;
+            }
+        }
+
+        // ĐÃ SỬA: Ép về chuỗi rỗng "" nếu maPhongCu bị NULL
+        String maPhongCu = (ntHienTai.getMaPhong() != null) ? ntHienTai.getMaPhong().trim() : "";
+
+        if (!maPhongMoi.isEmpty() && !maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+            if (hdDao.hasActiveContractByNguoiThue(ma)) {
+                JOptionPane.showMessageDialog(this,
+                        "Người thuê " + ten + " đang có Hợp đồng hoạt động ở phòng " + maPhongCu + "!\nKhông thể đổi phòng trực tiếp tại đây. Vui lòng sang Tab 'Hợp Đồng' để xử lý.",
+                        "Cảnh báo ràng buộc Hợp đồng", JOptionPane.WARNING_MESSAGE);
+                CboMaPhong.setSelectedItem(maPhongCu.isEmpty() ? null : maPhongCu);
+                return;
+            }
+
+            int soNguoiHienTaiPhongMoi = ntDAO.countNguoiThueByMaPhong(maPhongMoi);
+            Phong phongMoi = pDAO.findById(maPhongMoi);
+
+            if (phongMoi != null && soNguoiHienTaiPhongMoi >= phongMoi.getSoNguoiToiDa()) {
+                JOptionPane.showMessageDialog(this,
+                        "Phòng " + maPhongMoi + " đã đạt số người tối đa (" + soNguoiHienTaiPhongMoi + "/" + phongMoi.getSoNguoiToiDa() + ")!\nKhông thể chuyển người thuê sang phòng này.",
+                        "Cảnh báo phòng đầy", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        // ĐÃ SỬA: Xử lý an toàn tránh NullPointerException nếu NgayVaoO chưa có
+        java.sql.Date ngayVaoO = (ntHienTai.getNgayVaoO() != null)
+                ? new java.sql.Date(ntHienTai.getNgayVaoO().getTime())
+                : new java.sql.Date(System.currentTimeMillis());
+
+        NguoiThue nt = new NguoiThue(ma, ten, ngaySql, cccd, sdt, email, ngayVaoO, maPhongMoi);
+
+        if (ntDAO.update(nt)) {
+            if (!maPhongMoi.equalsIgnoreCase(maPhongCu)) {
+                // An toàn: maPhongCu không bao giờ bị null nữa nên gọi .isEmpty() bình thường
+                if (!maPhongCu.isEmpty() && ntDAO.countNguoiThueByMaPhong(maPhongCu) == 0) {
+                    pDAO.updateTrangThai(maPhongCu, "Trống");
+                }
+                if (!maPhongMoi.isEmpty()) {
+                    pDAO.updateTrangThai(maPhongMoi, "Đã thuê");
+                }
+            }
+
+            JOptionPane.showMessageDialog(this, "Cập nhật thông tin thành công!");
+            NapDuLieuTableNguoiThue();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btSuaActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
-       String ma = txtNguoiThue.getText().trim();
+        String ma = txtNguoiThue.getText().trim();
         String ten = txtHoTen.getText().trim();
-    if (ma.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // 1. Kiểm tra xem Người thuê này đã ký hợp đồng chưa
-    if (ntDAO.hasHopDong(ma)) {
-        JOptionPane.showMessageDialog(this, 
-            "Không thể xóa! Người thuê này đang có hợp đồng tồn tại trong hệ thống.\nVui lòng thanh lý hoặc xóa hợp đồng trước.", 
-            "Cảnh báo Xóa", 
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // 2. Nếu chưa có hợp đồng thì tiến hành hỏi và xóa như bình thường
-    int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ten + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-    if (confirm == JOptionPane.YES_OPTION) {
-        if (ntDAO.delete(ma)) {
-            JOptionPane.showMessageDialog(this, "Xóa thành công!");
-            NapDuLieuTableNguoiThue();
-        } else {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
+
+        // 1. Kiểm tra xem Người thuê này đã ký hợp đồng chưa
+        if (ntDAO.hasHopDong(ma)) {
+            JOptionPane.showMessageDialog(this,
+                    "Không thể xóa! Người thuê này đang có hợp đồng tồn tại trong hệ thống.\nVui lòng thanh lý hoặc xóa hợp đồng trước.",
+                    "Cảnh báo Xóa",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 2. Nếu chưa có hợp đồng thì tiến hành hỏi và xóa như bình thường
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ten + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (ntDAO.delete(ma)) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                NapDuLieuTableNguoiThue();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btXoaActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
         // TODO add your handling code here:
-         NapDuLieuTableNguoiThue();
+        NapDuLieuTableNguoiThue();
         NapDuLieuCboMaPhong();
 
         // Clear toàn bộ các ô nhập liệu
@@ -559,9 +630,9 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
     private void txtSoDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoDTActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSoDTActionPerformed
-public javax.swing.JTable getTblNguoiThue() {
-    return tblNguoiThue; 
-}
+    public javax.swing.JTable getTblNguoiThue() {
+        return tblNguoiThue;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboMaPhong;
