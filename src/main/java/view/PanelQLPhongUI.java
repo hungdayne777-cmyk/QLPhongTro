@@ -318,38 +318,44 @@ public class PanelQLPhongUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btLamMoiActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
-        String maPhong = txtMaPhong.getText().trim();
+       String maPhong = txtMaPhong.getText().trim();
 
-        if (maPhong.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
+    if (maPhong.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    
+    if (pDAO.isPhongDangThue(maPhong)) {
+        JOptionPane.showMessageDialog(this,
+                "Không thể xóa! Phòng " + maPhong + " hiện đang có hợp đồng còn hiệu lực.\nVui lòng thanh lý hợp đồng trước khi xóa phòng.",
+                "Cảnh báo ràng buộc",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 2. Hỏi xác nhận xóa
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc chắn muốn xóa phòng " + maPhong + " khỏi hệ thống không?",
+            "Xác nhận xóa",
+            JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (pDAO.delete(maPhong)) {
+            JOptionPane.showMessageDialog(this, "Xóa phòng thành công!");
+            
+            // Dọn sạch các ô nhập liệu sau khi xóa
+            txtMaPhong.setText("");
+            // txtTenPhong.setText(""); 
+            
+            refreshData(); 
+        } else {
+           
+            JOptionPane.showMessageDialog(this, "Xóa thất bại! Đã xảy ra lỗi kết nối CSDL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-
-        // 1. Kiểm tra ràng buộc chủ động trước khi hỏi xóa
-        Phong p = pDAO.findById(maPhong);
-        if (p != null && "Đã thuê".equalsIgnoreCase(p.getTrangThai())) {
-            JOptionPane.showMessageDialog(this,
-                    "Không thể xóa! Phòng " + maPhong + " hiện đang có người thuê.\nVui lòng thanh lý hợp đồng trước khi xóa phòng.",
-                    "Cảnh báo ràng buộc",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "Bạn có chắc chắn muốn xóa phòng " + maPhong + " không?",
-                "Xác nhận xóa",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (pDAO.delete(maPhong)) {
-                JOptionPane.showMessageDialog(this, "Xóa phòng thành công!");
-                refreshData();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa thất bại! Phòng này có dữ liệu lịch sử liên kết.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    }
 
 
     }//GEN-LAST:event_btXoaActionPerformed

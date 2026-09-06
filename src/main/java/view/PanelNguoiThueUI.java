@@ -578,32 +578,37 @@ public class PanelNguoiThueUI extends javax.swing.JPanel {
     }//GEN-LAST:event_btSuaActionPerformed
 
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
-        String ma = txtNguoiThue.getText().trim();
-        String ten = txtHoTen.getText().trim();
-        if (ma.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+     String ma = txtNguoiThue.getText().trim();
+    String ten = txtHoTen.getText().trim();
 
-        // 1. Kiểm tra xem Người thuê này đã ký hợp đồng chưa
-        if (ntDAO.hasHopDong(ma)) {
-            JOptionPane.showMessageDialog(this,
-                    "Không thể xóa! Người thuê này đang có hợp đồng tồn tại trong hệ thống.\nVui lòng thanh lý hoặc xóa hợp đồng trước.",
-                    "Cảnh báo Xóa",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    if (ma.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn người thuê cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-        // 2. Nếu chưa có hợp đồng thì tiến hành hỏi và xóa như bình thường
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa người thuê " + ten + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (ntDAO.delete(ma)) {
-                JOptionPane.showMessageDialog(this, "Xóa thành công!");
-                NapDuLieuTableNguoiThue();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+    // 1. Kiểm tra xem người thuê có hợp đồng ĐANG HIỆU LỰC không
+    if (ntDAO.hasActiveContract(ma)) {
+        JOptionPane.showMessageDialog(this,
+                "Không thể xóa! Người thuê này đang có hợp đồng ĐANG HIỆU LỰC trong hệ thống.\nVui lòng thanh lý hợp đồng trước.",
+                "Cảnh báo Xóa",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 2. Hỏi xác nhận xóa
+    int confirm = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn xóa người thuê " + ten + " khỏi hệ thống?", 
+            "Xác nhận xóa", 
+            JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (ntDAO.delete(ma)) {
+            JOptionPane.showMessageDialog(this, "Xóa người thuê thành công!");
+            NapDuLieuTableNguoiThue(); // Tải lại bảng trên giao diện
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
     }//GEN-LAST:event_btXoaActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed

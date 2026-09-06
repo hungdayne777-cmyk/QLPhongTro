@@ -221,13 +221,12 @@ public class HoaDonDAO {
     public List<HoaDon> findByName(String name) {
      List<HoaDon> ds = new ArrayList<>();
     
-   
+    // Đã bỏ điều kiện hdt.TrangThai = N'Đang hiệu lực' để tìm được cả hóa đơn cũ
     String sql = "SELECT hd.*, nt.HoTen "
             + "FROM HoaDon hd "
             + "JOIN HOPDONG hdt ON hd.MaHD = hdt.MaHD " 
             + "LEFT JOIN NGUOITHUE nt ON hdt.MaNT = nt.MaNT "
-            + "WHERE (hdt.TrangThai = N'Đang hiệu lực' OR hdt.TrangThai = N'Đang hiệu lực') " // Điều kiện hợp đồng
-            + "  AND (hd.MaHoaDon LIKE ? OR hdt.MaPhong LIKE ? OR nt.HoTen LIKE ?)";
+            + "WHERE (hd.MaHoaDon LIKE ? OR hdt.MaPhong LIKE ? OR nt.HoTen LIKE ?)";
 
     try (Connection conn = DBConnection.getConnection(); 
          PreparedStatement ps = conn.prepareStatement(sql)) {

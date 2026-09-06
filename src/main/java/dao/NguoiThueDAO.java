@@ -21,43 +21,45 @@ import util.DBConnection;
 public class NguoiThueDAO {
 
     public List<NguoiThue> findAll() {
-        List<NguoiThue> ds = new ArrayList<>();
-        String sql = "SELECT * FROM NGUOITHUE";
+    List<NguoiThue> ds = new ArrayList<>();
+    // Chỉ lấy những người có TrangThai khác 'Đã xóa'
+    String sql = "SELECT * FROM NGUOITHUE WHERE TrangThai IS NULL OR TrangThai != N'Đã xóa'";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-              
-                String maNT = rs.getString("MaNT");
-                String hoTen = rs.getString("HoTen");
-                Date ngaySinh = rs.getDate("NgaySinh");
-                String cCCD = rs.getString("CCCD");         // Đổi thành String
-                String sDT = rs.getString("SoDienThoai");     // Đổi thành String
-                String eMail = rs.getString("Email");
-                Date ngayVaoO = rs.getDate("NgayVaoO");
-                String maPhong = rs.getString("MaPhong");
+        while (rs.next()) {
+            String maNT = rs.getString("MaNT");
+            String hoTen = rs.getString("HoTen");
+            Date ngaySinh = rs.getDate("NgaySinh");
+            String cCCD = rs.getString("CCCD");
+            String sDT = rs.getString("SoDienThoai");
+            String eMail = rs.getString("Email");
+            Date ngayVaoO = rs.getDate("NgayVaoO");
+            String maPhong = rs.getString("MaPhong");
 
-                ds.add(new NguoiThue(maNT, hoTen, ngaySinh, cCCD, sDT, eMail, ngayVaoO, maPhong));
-            }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi đọc dữ liệu: " + e.getMessage());
+            ds.add(new NguoiThue(maNT, hoTen, ngaySinh, cCCD, sDT, eMail, ngayVaoO, maPhong));
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi đọc dữ liệu: " + e.getMessage());
+    }
+    return ds;
     }
 
     public boolean delete(String maNguoiThue) {
-        String sql = "DELETE FROM NGUOITHUE WHERE MaNT=?";
-
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, maNguoiThue);
-            int rows = ps.executeUpdate();
-            return rows > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi xóa dữ liệu: " + e.getMessage());
-        }
-        return false;
+     // Chuyển trạng thái thành 'Đã xóa' và gỡ Mã Phòng về NULL
+    String sql = "UPDATE NGUOITHUE SET TrangThai = N'Đã xóa', MaPhong = NULL WHERE MaNT = ?";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, maNguoiThue);
+        return ps.executeUpdate() > 0;
+        
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi xóa mềm người thuê: " + e.getMessage());
+    }
+    return false;
     }
 
     public NguoiThue findById(String maNguoiThue) {
@@ -131,31 +133,32 @@ public class NguoiThueDAO {
     }
 
     public List<NguoiThue> findByName(String name) {
-        List<NguoiThue> ds = new ArrayList<>();
-        String sql = "SELECT * FROM NGUOITHUE WHERE MaNT LIKE ? OR HoTen LIKE ?";
+       List<NguoiThue> ds = new ArrayList<>();
+    String sql = "SELECT * FROM NGUOITHUE WHERE (MaNT LIKE ? OR HoTen LIKE ?) AND (TrangThai IS NULL OR TrangThai != N'Đã xóa')";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, "%" + name + "%");
-               ps.setString(2, "%" + name + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String maNT = rs.getString("MaNT");
+        ps.setString(1, "%" + name + "%");
+        ps.setString(2, "%" + name + "%");
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String maNT = rs.getString("MaNT");
                 String hoTen = rs.getString("HoTen");
                 Date ngaySinh = rs.getDate("NgaySinh");
-                String cCCD = rs.getString("CCCD");         // Đổi thành String
-                String sDT = rs.getString("SoDienThoai");     // Đổi thành String
+                String cCCD = rs.getString("CCCD");
+                String sDT = rs.getString("SoDienThoai");
                 String eMail = rs.getString("Email");
                 Date ngayVaoO = rs.getDate("NgayVaoO");
                 String maPhong = rs.getString("MaPhong");
 
                 ds.add(new NguoiThue(maNT, hoTen, ngaySinh, cCCD, sDT, eMail, ngayVaoO, maPhong));
-                }
             }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
+    }
+    return ds;
     }
      public boolean deleteByMaPhong(String maPhong) {
     String sql = "DELETE FROM NGUOITHUE WHERE MaPhong = ?";
@@ -250,6 +253,22 @@ public class NguoiThueDAO {
         }
     } catch (SQLException e) {
         e.printStackTrace();
+    }
+    return false;
+}
+    public boolean hasActiveContract(String maNT) {
+    String sql = "SELECT COUNT(*) FROM HOPDONG WHERE MaNT = ? AND TrangThai = N'Đang hiệu lực'";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, maNT);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi kiểm tra hợp đồng hiệu lực: " + e.getMessage());
     }
     return false;
 }

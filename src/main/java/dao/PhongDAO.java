@@ -20,40 +20,50 @@ import util.DBConnection;
  */
 public class PhongDAO {
     public List<Phong> findAll() {
-        List<Phong> ds = new ArrayList<>();
-        String sql = "SELECT * FROM PHONG";
+     List<Phong> ds = new ArrayList<>();
+   
+    String sql = "SELECT * FROM PHONG WHERE TrangThai IS NULL OR TrangThai != N'Đã xóa'";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                String maPhong = rs.getString("MaPhong");
-                String tenPhong = rs.getString("TenPhong");
-                int soNguoiToiDa = rs.getInt("SoNguoiToiDa");
-                double giaPhong = rs.getDouble("GiaPhong");
-                String loaiGia = rs.getString("LoaiGia");
-                String trangThai = rs.getString("TrangThai");
+        while (rs.next()) {
+            String maPhong = rs.getString("MaPhong");
+            String tenPhong = rs.getString("TenPhong");
+            int soNguoiToiDa = rs.getInt("SoNguoiToiDa");
+            double giaPhong = rs.getDouble("GiaPhong");
+            String loaiGia = rs.getString("LoaiGia");
+            String trangThai = rs.getString("TrangThai");
 
-                ds.add(new Phong(maPhong, tenPhong, soNguoiToiDa, giaPhong, loaiGia, trangThai));
-            }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi đọc dữ liệu: " + e.getMessage());
+            ds.add(new Phong(maPhong, tenPhong, soNguoiToiDa, giaPhong, loaiGia, trangThai));
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi đọc dữ liệu: " + e.getMessage());
+    }
+    return ds;
     }
 
     public boolean delete(String maPhong) {
-        String sql = "DELETE FROM PHONG WHERE MaPhong=?";
-
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, maPhong);
-            int rows = ps.executeUpdate();
-            return rows > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi xóa dữ liệu: " + e.getMessage());
-        }
+     // 1. Kiểm tra phòng nếu đang có hợp đồng còn hiệu lực thì KHÔNG cho xóa
+    if (isPhongDangThue(maPhong)) {
+        System.out.println("Không thể xóa: Phòng " + maPhong + " đang có hợp đồng còn hiệu lực!");
         return false;
+    }
+
+    // 2. Chuyển trạng thái phòng sang 'Đã xóa' thay vì dùng lệnh DELETE
+    String sql = "UPDATE PHONG SET TrangThai = N'Đã xóa' WHERE MaPhong = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, maPhong);
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi xóa mềm phòng: " + e.getMessage());
+    }
+    return false;
     }
 
     public Phong findById(String maPhong) {
@@ -137,8 +147,9 @@ public class PhongDAO {
         return 0;
     }
     public boolean thanhLyHopDong(String maHopDong, String maPhong) {
-    String sqlUpdateHopDong = "UPDATE HOPDONG SET TrangThai = N'Đã thanh lý' WHERE MaHopDong = ?";
-    String sqlDeleteNguoiThue = "DELETE FROM NGUOITHUE WHERE MaPhong = ?";
+   String sqlUpdateHopDong = "UPDATE HOPDONG SET TrangThai = N'Đã thanh lý' WHERE MaHopDong = ?";
+    // Gỡ người thuê ra khỏi phòng (gán MaPhong về NULL) thay vì DELETE hẳn người thuê
+    String sqlUpdateNguoiThue = "UPDATE NGUOITHUE SET MaPhong = NULL WHERE MaPhong = ?";
     String sqlUpdatePhong = "UPDATE PHONG SET TrangThai = N'Trống' WHERE MaPhong = ?";
 
     Connection conn = null;
@@ -152,8 +163,8 @@ public class PhongDAO {
             ps1.executeUpdate();
         }
 
-        // 2. Xóa danh sách người thuê khỏi phòng
-        try (PreparedStatement ps2 = conn.prepareStatement(sqlDeleteNguoiThue)) {
+        // 2. Gỡ mã phòng của người thuê
+        try (PreparedStatement ps2 = conn.prepareStatement(sqlUpdateNguoiThue)) {
             ps2.setNString(1, maPhong);
             ps2.executeUpdate();
         }
@@ -169,7 +180,7 @@ public class PhongDAO {
 
     } catch (SQLException e) {
         if (conn != null) {
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); } // Tự động hoàn tác nếu lỗi
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
         }
         e.printStackTrace();
     }
@@ -178,28 +189,28 @@ public class PhongDAO {
 
     public List<Phong> findByName(String name) {
         List<Phong> ds = new ArrayList<>();
-        String sql = "SELECT * FROM PHONG WHERE MaPhong LIKE ? OR TenPhong LIKE ?";
+    String sql = "SELECT * FROM PHONG WHERE (MaPhong LIKE ? OR TenPhong LIKE ?) AND (TrangThai IS NULL OR TrangThai != N'Đã xóa')";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String key = "%" + name + "%";
-            ps.setString(1, key); // Gán cho MaPhong
-            ps.setString(2, key); // Gán cho TenPhong          
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String maPhong = rs.getString("MaPhong");
-                    String tenPhong = rs.getString("TenPhong");
-                    int soNguoiToiDa = rs.getInt("SoNguoiToiDa");
-                    double giaPhong = rs.getDouble("GiaPhong");
-                    String loaiGia = rs.getString("LoaiGia");
-                    String trangThai = rs.getString("TrangThai");
-                    ds.add(new Phong(maPhong, tenPhong, soNguoiToiDa, giaPhong, loaiGia, trangThai));
-                }
+        String key = "%" + name + "%";
+        ps.setString(1, key);
+        ps.setString(2, key);          
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String maPhong = rs.getString("MaPhong");
+                String tenPhong = rs.getString("TenPhong");
+                int soNguoiToiDa = rs.getInt("SoNguoiToiDa");
+                double giaPhong = rs.getDouble("GiaPhong");
+                String loaiGia = rs.getString("LoaiGia");
+                String trangThai = rs.getString("TrangThai");
+                ds.add(new Phong(maPhong, tenPhong, soNguoiToiDa, giaPhong, loaiGia, trangThai));
             }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
         }
-        return ds;
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi tìm kiếm theo tên: " + e.getMessage());
+    }
+    return ds;
     }
     public boolean updateTrangThai(String maPhong, String trangThai) {
     String sql = "UPDATE PHONG SET TrangThai = ? WHERE MaPhong = ?";
